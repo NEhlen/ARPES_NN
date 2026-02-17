@@ -1,13 +1,12 @@
 import os
+import time
 from typing import Callable
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, TensorDataset
-from torchvision import transforms
 from dotenv import load_dotenv
+from torch.utils.data import DataLoader, TensorDataset
 
 load_dotenv()
 
@@ -93,43 +92,94 @@ def train(
     network: nn.Module,
     in_data: torch.Tensor,
     target_data: torch.Tensor,
-    epochs=2,
+    epochs: int = 2,
+    batch_size: int = 8,
+    lr: float = 1e-4,
+    num_workers: int | None = None,
+    use_amp: bool = True,
     loss_fn: nn.Module | Callable[[torch.Tensor, torch.Tensor], torch.Tensor] = (
         torch.nn.CrossEntropyLoss()
     ),
-):
+) -> float:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    amp_enabled = use_amp and device.type == "cuda"
+    if num_workers is None:
+        num_workers = min(8, os.cpu_count() or 1)
+
+    if device.type == "cuda":
+        torch.backends.cudnn.benchmark = True
+        torch.set_float32_matmul_precision("high")
+
+    network = network.to(device)
     dataset = TensorDataset(in_data, target_data)
-    dataloader = DataLoader(dataset, batch_size=4, shuffle=True)
-    optimizer = torch.optim.Adam(network.parameters(), lr=1e-5)
+    dataloader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=num_workers,
+        pin_memory=device.type == "cuda",
+        persistent_workers=num_workers > 0,
+    )
+    optimizer = torch.optim.Adam(network.parameters(), lr=lr)
+    scaler = torch.cuda.amp.GradScaler(enabled=amp_enabled)
 
-    for e in range(epochs):
-        print("EPOCH:", e)
-        running_loss = 0.0
-        last_loss = 0.0
+    print(f"Training on device: {device}")
+    print(
+        f"epochs={epochs}, batch_size={batch_size}, lr={lr}, "
+        f"num_workers={num_workers}, amp={amp_enabled}"
+    )
 
-        for i, data in enumerate(dataloader):
-            inputs, targets = data
+    last_epoch_loss = 0.0
+    steps_per_epoch = len(dataloader)
+    log_every = max(1, steps_per_epoch // 10)
 
-            optimizer.zero_grad()
+    for epoch in range(epochs):
+        network.train()
+        epoch_start = time.perf_counter()
+        epoch_loss = 0.0
+        seen_samples = 0
 
-            outputs = network(inputs)
+        for step, (inputs, targets) in enumerate(dataloader, start=1):
+            inputs = inputs.to(device, non_blocking=True)
+            targets = targets.to(device, non_blocking=True)
+            optimizer.zero_grad(set_to_none=True)
 
-            loss = loss_fn(outputs, targets)
-            loss.backward()
+            with torch.autocast(
+                device_type=device.type, dtype=torch.float16, enabled=amp_enabled
+            ):
+                outputs = network(inputs)
+                loss = loss_fn(outputs, targets)
 
-            optimizer.step()
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
 
-            # Gather data and report
-            running_loss += loss.item()
-            if i % 5 == 0:
-                if i != 0:
-                    last_loss = running_loss / 5  # loss per batch
-                else:
-                    last_loss = running_loss
-                print("  batch {} loss: {}".format(i + 1, last_loss))
-                running_loss = 0.0
+            batch_n = inputs.size(0)
+            seen_samples += batch_n
+            epoch_loss += loss.item() * batch_n
 
-    return last_loss
+            if step % log_every == 0 or step == steps_per_epoch:
+                print(
+                    f"epoch {epoch + 1}/{epochs} step {step}/{steps_per_epoch} "
+                    f"batch_loss={loss.item():.6f}"
+                )
+
+        last_epoch_loss = epoch_loss / seen_samples
+        elapsed = time.perf_counter() - epoch_start
+        samples_per_sec = seen_samples / elapsed if elapsed > 0 else 0.0
+        epoch_log = (
+            f"epoch {epoch + 1}/{epochs} done "
+            f"loss={last_epoch_loss:.6f} "
+            f"time={elapsed:.2f}s "
+            f"throughput={samples_per_sec:.2f} samples/s"
+        )
+        if device.type == "cuda":
+            peak_mem_gb = torch.cuda.max_memory_allocated(device) / (1024**3)
+            epoch_log += f" peak_mem={peak_mem_gb:.2f}GB"
+            torch.cuda.reset_peak_memory_stats(device)
+        print(epoch_log)
+
+    return last_epoch_loss
 
 
 if __name__ == "__main__":
@@ -145,7 +195,13 @@ if __name__ == "__main__":
     target_data = torch.tensor(target_data, dtype=torch.float32).unsqueeze(1)
     arpes_unet = Unet()
     final_loss = train(
-        arpes_unet, in_data, target_data, loss_fn=torch.nn.MSELoss(), epochs=100
+        arpes_unet,
+        in_data,
+        target_data,
+        loss_fn=torch.nn.MSELoss(),
+        epochs=100,
+        batch_size=8,
+        lr=1e-4,
     )
     torch.save(
         arpes_unet.state_dict(),

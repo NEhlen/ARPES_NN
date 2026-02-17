@@ -193,6 +193,17 @@ def param_randomizer(params: dict, change_params: dict):
     return params
 
 
+def get_max_dataset_index(dataset_path: str) -> int:
+    max_index = 0
+    if not os.path.isdir(dataset_path):
+        return max_index
+    for entry in os.listdir(dataset_path):
+        entry_path = os.path.join(dataset_path, entry)
+        if os.path.isdir(entry_path) and entry.isdigit():
+            max_index = max(max_index, int(entry))
+    return max_index
+
+
 if __name__ == "__main__":
 
     def Hamiltonian_graphene(k: np.ndarray, parameters: dict):
@@ -267,16 +278,23 @@ if __name__ == "__main__":
             "noise_level": [0.1, 0.5],  # percentage
         },
     }
+    dataset_path = os.environ["DATASET_PATH"]
+    max_existing_index = get_max_dataset_index(dataset_path)
+    start_index = max_existing_index + 1
+
+    print(f"Found highest existing dataset index: {max_existing_index:03d}")
+    print(f"Generating new datasets from index: {start_index:03d}")
+
     for i in range(1, 51):
-        print(i)
+        current_index = max_existing_index + i
+        print(current_index)
         param_randomizer(params, change_params)
         SG = SpectrumGeneratorBareband(Hamiltonian_graphene, params)
         SG.apply()
 
-        SG.save_spectra(
-            r"{}".format(os.environ["DATASET_PATH"]) + f"{i:03d}/graphene_test"
-        )
+        output_prefix = os.path.join(dataset_path, f"{current_index:03d}", "graphene_test")
+        SG.save_spectra(output_prefix)
         SG.plot_spectrum_before_after(
-            r"{}".format(os.environ["DATASET_PATH"]) + f"{i:03d}/graphene_test_image"
+            os.path.join(dataset_path, f"{current_index:03d}", "graphene_test_image")
         )
     plt.show()
