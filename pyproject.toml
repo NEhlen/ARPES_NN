@@ -1,0 +1,18 @@
+[project]
+name = "arpes-nn"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "matplotlib",
+    "pillow",
+    "torch",
+    "torchvision",
+    "scipy",
+    "python-dotenv",
+]
+
+[project.optional-dependencies]
+dev = ["black"]
