@@ -48,10 +48,14 @@ class SpectrumGenerator:
         self.Spectrum.add_poisson_noise(simulation_params["noise_level"])
 
     # save spectrum
-    def save_spectra(self, savestring: str):
+    def save_spectra(self, savestring: str, file_format: str = "txt"):
         os.makedirs("/".join(savestring.split("/")[:-1]), exist_ok=True)
-        np.savetxt(savestring + "_target.txt", self.Spectrum.original)
-        np.savetxt(savestring + "_input.txt", self.Spectrum.spectrum)
+        if file_format == "npy":
+            np.save(savestring + "_target.npy", self.Spectrum.original)
+            np.save(savestring + "_input.npy", self.Spectrum.spectrum)
+        else:
+            np.savetxt(savestring + "_target.txt", self.Spectrum.original)
+            np.savetxt(savestring + "_input.txt", self.Spectrum.spectrum)
         with open(savestring + "_parameters.json", "w") as f:
             temp_params = self.parameters
             temp_params["dispersion_relation"] = inspect.getsource(self.Dispersion.disp)
@@ -124,10 +128,14 @@ class SpectrumGeneratorBareband:
         # self.Spectrum_bare.add_poisson_noise(simulation_params["noise_level"])
 
     # save spectrum
-    def save_spectra(self, savestring: str) -> None:
+    def save_spectra(self, savestring: str, file_format: str = "txt") -> None:
         os.makedirs("/".join(savestring.split("/")[:-1]), exist_ok=True)
-        np.savetxt(savestring + "_target.txt", self.Spectrum_bare.spectrum)
-        np.savetxt(savestring + "_input.txt", self.Spectrum_kink.spectrum)
+        if file_format == "npy":
+            np.save(savestring + "_target.npy", self.Spectrum_bare.spectrum)
+            np.save(savestring + "_input.npy", self.Spectrum_kink.spectrum)
+        else:
+            np.savetxt(savestring + "_target.txt", self.Spectrum_bare.spectrum)
+            np.savetxt(savestring + "_input.txt", self.Spectrum_kink.spectrum)
         with open(savestring + "_parameters.json", "w") as f:
             temp_params = self.parameters
             temp_params["dispersion_relation"] = inspect.getsource(self.Dispersion.disp)
@@ -202,6 +210,13 @@ def get_max_dataset_index(dataset_path: str) -> int:
         if os.path.isdir(entry_path) and entry.isdigit():
             max_index = max(max_index, int(entry))
     return max_index
+
+
+def env_bool(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "y", "on"}
 
 
 if __name__ == "__main__":
@@ -279,13 +294,22 @@ if __name__ == "__main__":
         },
     }
     dataset_path = os.environ["DATASET_PATH"]
+    n_new_datasets = int(os.getenv("N_NEW_DATASETS", "50"))
+    save_plots = env_bool("SAVE_DATA_PLOTS", False)
+    file_format = os.getenv("DATA_FILE_FORMAT", "npy").strip().lower()
+    if file_format not in {"txt", "npy"}:
+        raise ValueError("DATA_FILE_FORMAT must be 'txt' or 'npy'.")
     max_existing_index = get_max_dataset_index(dataset_path)
     start_index = max_existing_index + 1
 
     print(f"Found highest existing dataset index: {max_existing_index:03d}")
     print(f"Generating new datasets from index: {start_index:03d}")
+    print(
+        f"n_new_datasets={n_new_datasets}, save_plots={save_plots}, "
+        f"file_format={file_format}"
+    )
 
-    for i in range(1, 51):
+    for i in range(1, n_new_datasets + 1):
         current_index = max_existing_index + i
         print(current_index)
         param_randomizer(params, change_params)
@@ -293,8 +317,10 @@ if __name__ == "__main__":
         SG.apply()
 
         output_prefix = os.path.join(dataset_path, f"{current_index:03d}", "graphene_test")
-        SG.save_spectra(output_prefix)
-        SG.plot_spectrum_before_after(
-            os.path.join(dataset_path, f"{current_index:03d}", "graphene_test_image")
-        )
-    plt.show()
+        SG.save_spectra(output_prefix, file_format=file_format)
+        if save_plots:
+            SG.plot_spectrum_before_after(
+                os.path.join(dataset_path, f"{current_index:03d}", "graphene_test_image")
+            )
+    if save_plots:
+        plt.show()
