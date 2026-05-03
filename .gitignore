@@ -163,6 +163,7 @@ cython_debug/
 .venv
 arpesnn/dataset/*
 !arpesnn/dataset/.gitkeep
+!arpesnn/dataset/example_dataset
 
 arpesnn/models/*
 !arpesnn/models/.gitkeep
