@@ -169,6 +169,10 @@ The new **v2 checkpoint** was trained with balanced background strength and loca
 
 There are useful fitting improvements: under locally comparable backgrounds, close-doublet center error falls from **59.6 to 3.6 meV**, and weak-doublet error from **29.0 to 4.9 meV**. But a buried close doublet still has about **100 meV** error, some easier cases regress, and band-shaped artifacts remain in background estimates. This is an exploratory baseline, **not reliable band-preserving subtraction**.
 
+![Background v2 on synthetic spectra across seven background-strength and local-contrast regimes](docs/figures/background-v2-test-v2.png)
+
+*Held-out synthetic examples, from zero background at the top to locally buried bands at the bottom. Columns show noisy input, true background, estimated background, true signal and subtraction. True and estimated backgrounds share a separate labelled scale within each row; spectra share the input scale. Rows are the first example of each regime, not selected for prediction quality. Negative corrected values display black but remain in the numerical output.*
+
 ![Background v2 on five experimental acquisitions](docs/figures/background-v2-experimental-five.png)
 
 *Five evenly spaced acquisitions from the available local filename sequence (061, 065, 069, 073, 077), chosen before inference. Each row shows original acquisition, resampled input, estimated background and subtraction. Spectra share a scale within each row; backgrounds use a separate labelled scale. About 13–43% of integrated intensity is subtracted. That is a model estimate, not a measured extrinsic fraction. Band-like structures in the estimates indicate possible signal removal. No experimental decomposition ground truth is available; these are acquisitions from one session, not five materials.*
