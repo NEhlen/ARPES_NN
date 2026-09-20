@@ -168,3 +168,9 @@ arpesnn/dataset/*
 arpesnn/models/*
 !arpesnn/models/.gitkeep
 library.bib
+
+# Local measurements, labbooks, generated output and release bundles
+/data/
+/outputs/
+/releases/
+/uv-cache/

@@ -1,0 +1,290 @@
+{
+  "test": {
+    "mse": {
+      "input": 0.04883552378311288,
+      "network": 0.0009421752851649217,
+      "gaussian": 0.02682314550434239,
+      "fourier": 0.02275417961498897,
+      "gaussian_by_counts": 0.019706378834031056,
+      "fourier_by_counts": 0.015762864747812272
+    },
+    "dominant_edc_peak_position_mae_eV": {
+      "input": 0.016618834185510203,
+      "network": 0.0038514658446836447,
+      "gaussian": 0.013787265785664157,
+      "fourier": 0.0128351284282979,
+      "gaussian_by_counts": 0.013450303095697256,
+      "fourier_by_counts": 0.01222616292041348
+    },
+    "dominant_edc_peak_height_relative_mae": {
+      "input": 0.07930475152423605,
+      "network": 0.0065555574662867,
+      "gaussian": 0.04833143025985919,
+      "fourier": 0.041145301196025684,
+      "gaussian_by_counts": 0.037971709819627,
+      "fourier_by_counts": 0.030935969314770773
+    },
+    "count_bins": {
+      "0-10": {
+        "n": 179,
+        "input": 0.18342813545598663,
+        "network": 0.0029241242967923196,
+        "gaussian": 0.08257954994310214,
+        "fourier": 0.06696202397845977,
+        "gaussian_by_counts": 0.05959548738748668,
+        "fourier_by_counts": 0.0527165883881503
+      },
+      "10-30": {
+        "n": 174,
+        "input": 0.06285754004600404,
+        "network": 0.0012400822892775706,
+        "gaussian": 0.03182556272495067,
+        "fourier": 0.024054266469574523,
+        "gaussian_by_counts": 0.03283372908381039,
+        "fourier_by_counts": 0.01821129768016352
+      },
+      "30-100": {
+        "n": 182,
+        "input": 0.01949677119993574,
+        "network": 0.00041567952523889417,
+        "gaussian": 0.010597612074279523,
+        "fourier": 0.008090630208223976,
+        "gaussian_by_counts": 0.010714757678375304,
+        "fourier_by_counts": 0.007683919810505768
+      },
+      "100-300": {
+        "n": 174,
+        "input": 0.006129767743057047,
+        "network": 0.00022104041665610484,
+        "gaussian": 0.005785665492896505,
+        "fourier": 0.0031202394406889275,
+        "gaussian_by_counts": 0.005328058625100416,
+        "fourier_by_counts": 0.0033988564726147243
+      },
+      "300-inf": {
+        "n": 291,
+        "input": 0.0015453045457262302,
+        "network": 0.0003053883560589628,
+        "gaussian": 0.012262154491762295,
+        "fourier": 0.01569456562392463,
+        "gaussian_by_counts": 0.0015414076730452119,
+        "fourier_by_counts": 0.004013591746522011
+      }
+    },
+    "families": {
+      "avoided_crossing": {
+        "input": 0.04668008859211113,
+        "network": 0.0006770209024216456,
+        "gaussian": 0.020671224104589783,
+        "fourier": 0.016421302232920425,
+        "gaussian_by_counts": 0.012424102529184893,
+        "fourier_by_counts": 0.009699696472089271
+      },
+      "bilayer": {
+        "input": 0.03966051561234053,
+        "network": 0.0006901516775542404,
+        "gaussian": 0.017364382201776607,
+        "fourier": 0.013808232746232534,
+        "gaussian_by_counts": 0.01154689266346395,
+        "fourier_by_counts": 0.008573729571944569
+      },
+      "dirac": {
+        "input": 0.0473695300106192,
+        "network": 0.001131560769981661,
+        "gaussian": 0.030693477570166577,
+        "fourier": 0.02079228471731767,
+        "gaussian_by_counts": 0.03862537143751979,
+        "fourier_by_counts": 0.017959024367155508
+      },
+      "honeycomb": {
+        "input": 0.03834808408340905,
+        "network": 0.0009045491148572182,
+        "gaussian": 0.04035806173487799,
+        "fourier": 0.03863174868703936,
+        "gaussian_by_counts": 0.013063674807781353,
+        "fourier_by_counts": 0.011491941590211354
+      },
+      "multiband_parabolic": {
+        "input": 0.043119557874160816,
+        "network": 0.0011765013816693681,
+        "gaussian": 0.021889154256205075,
+        "fourier": 0.018591389362118207,
+        "gaussian_by_counts": 0.027785461500752718,
+        "fourier_by_counts": 0.028307974051567725
+      },
+      "parabolic": {
+        "input": 0.06772829375055153,
+        "network": 0.0009274706205269468,
+        "gaussian": 0.030724621934932656,
+        "fourier": 0.023817543300392572,
+        "gaussian_by_counts": 0.019066769799683244,
+        "fourier_by_counts": 0.012938071043754462
+      },
+      "rashba": {
+        "input": 0.047094514175551015,
+        "network": 0.0011024820585589623,
+        "gaussian": 0.026467466941976454,
+        "fourier": 0.01990477190745878,
+        "gaussian_by_counts": 0.024638748129364105,
+        "fourier_by_counts": 0.022403902569494677
+      },
+      "spin_split_valence": {
+        "input": 0.05086783863778692,
+        "network": 0.0009192035098203633,
+        "gaussian": 0.022174534346850124,
+        "fourier": 0.01768518801065511,
+        "gaussian_by_counts": 0.013504288116237148,
+        "fourier_by_counts": 0.009983605961606372
+      },
+      "square_lattice": {
+        "input": 0.05018953682796564,
+        "network": 0.0008536504092990072,
+        "gaussian": 0.02422279635677114,
+        "fourier": 0.01845450306573184,
+        "gaussian_by_counts": 0.019837085530161856,
+        "fourier_by_counts": 0.014974514121713583
+      },
+      "triangular_lattice": {
+        "input": 0.05729727826663293,
+        "network": 0.0010391624069598037,
+        "gaussian": 0.03366573559527751,
+        "fourier": 0.0394348321200232,
+        "gaussian_by_counts": 0.01657139382616151,
+        "fourier_by_counts": 0.02129618772858521
+      }
+    },
+    "paired_mse_advantage": {
+      "gaussian_by_counts": {
+        "baseline_minus_network_mean": 0.018764203548866133,
+        "bootstrap_95pct": [
+          0.014899330379060188,
+          0.02340923549162362
+        ],
+        "network_win_fraction": 0.995
+      },
+      "fourier_by_counts": {
+        "baseline_minus_network_mean": 0.01482068946264735,
+        "bootstrap_95pct": [
+          0.010932520295900508,
+          0.019782678679661353
+        ],
+        "network_win_fraction": 1.0
+      }
+    }
+  },
+  "ood": {
+    "mse": {
+      "input": 0.05164745634578867,
+      "network": 0.0009578677243580387,
+      "gaussian": 0.026643492238436012,
+      "fourier": 0.020184585242619506,
+      "gaussian_by_counts": 0.02095918992726365,
+      "fourier_by_counts": 0.016685900259471965
+    },
+    "dominant_edc_peak_position_mae_eV": {
+      "input": 0.009074625788034066,
+      "network": 0.001653367257974877,
+      "gaussian": 0.007348682784944859,
+      "fourier": 0.006862201390456552,
+      "gaussian_by_counts": 0.006995896600615509,
+      "fourier_by_counts": 0.0062331782630364605
+    },
+    "dominant_edc_peak_height_relative_mae": {
+      "input": 0.0713344956038054,
+      "network": 0.00607657355122501,
+      "gaussian": 0.044558459430700165,
+      "fourier": 0.03735741558740847,
+      "gaussian_by_counts": 0.03508897421346046,
+      "fourier_by_counts": 0.028225560674909504
+    },
+    "count_bins": {
+      "0-10": {
+        "n": 192,
+        "input": 0.18506021817059568,
+        "network": 0.002965816684688131,
+        "gaussian": 0.08254792558727786,
+        "fourier": 0.06586754209517191,
+        "gaussian_by_counts": 0.05938504641138328,
+        "fourier_by_counts": 0.04503517414074546
+      },
+      "10-30": {
+        "n": 182,
+        "input": 0.061083637996689304,
+        "network": 0.0012006840221187264,
+        "gaussian": 0.03019701052907404,
+        "fourier": 0.023599528656392307,
+        "gaussian_by_counts": 0.0286494109083663,
+        "fourier_by_counts": 0.02793742363484433
+      },
+      "30-100": {
+        "n": 189,
+        "input": 0.019106844154299883,
+        "network": 0.0004723558228602448,
+        "gaussian": 0.012682932345245881,
+        "fourier": 0.008845620909360823,
+        "gaussian_by_counts": 0.01625849571936424,
+        "fourier_by_counts": 0.011061432855154471
+      },
+      "100-300": {
+        "n": 156,
+        "input": 0.006019541654938784,
+        "network": 0.0002639603651867872,
+        "gaussian": 0.008178944154702222,
+        "fourier": 0.005394042197925349,
+        "gaussian_by_counts": 0.0052753717411691565,
+        "fourier_by_counts": 0.0034769707492206437
+      },
+      "300-inf": {
+        "n": 281,
+        "input": 0.0015958373605114576,
+        "network": 0.00014040342129033545,
+        "gaussian": 0.005784502163708783,
+        "fourier": 0.002596476904404088,
+        "gaussian_by_counts": 0.001591653197057532,
+        "fourier_by_counts": 0.0011441903074895067
+      }
+    },
+    "families": {
+      "mexican_hat": {
+        "input": 0.051183199165854606,
+        "network": 0.0010729550359319547,
+        "gaussian": 0.02709342443177593,
+        "fourier": 0.02070408619608497,
+        "gaussian_by_counts": 0.021490223113796673,
+        "fourier_by_counts": 0.019102786558272782
+      },
+      "saddle": {
+        "input": 0.05211171352572273,
+        "network": 0.0008427804127841228,
+        "gaussian": 0.02619356004509609,
+        "fourier": 0.019665084289154037,
+        "gaussian_by_counts": 0.02042815674073063,
+        "fourier_by_counts": 0.014269013960671146
+      }
+    },
+    "paired_mse_advantage": {
+      "gaussian_by_counts": {
+        "baseline_minus_network_mean": 0.02000132220290561,
+        "bootstrap_95pct": [
+          0.016939384061338523,
+          0.02347686309510122
+        ],
+        "network_win_fraction": 0.998
+      },
+      "fourier_by_counts": {
+        "baseline_minus_network_mean": 0.015728032535113925,
+        "bootstrap_95pct": [
+          0.012190731094630064,
+          0.02020166175210545
+        ],
+        "network_win_fraction": 0.999
+      }
+    }
+  },
+  "provenance": {
+    "checkpoint_sha256": "a30e443b883030c33d427f1bb1ea85a6f510d639c39a8aacbf6668e4a301fd40",
+    "seed": 42,
+    "corpus": "corpus_v2_integrated_20260919 (generated locally; not distributed)",
+    "note": "Fixed noise identical to original evaluation. Count-conditioned baselines use true synthetic noise level; not automatically available for experiment. Peak metrics compare to broadened clean target, not bare bands."
+  }
+}

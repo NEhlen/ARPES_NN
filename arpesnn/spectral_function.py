@@ -38,7 +38,7 @@ class Spectrum:
     # multiply with Fermi function of a given temperature in K
     def add_Fermi(self, Temp: float = 20.0) -> NDArray[np.floating]:
         def fermi(E: NDArray[np.floating], T: float) -> NDArray[np.floating]:
-            return 1.0 / (np.exp(E / (_kb * T)) + 1.0)
+            return 1.0 / (np.exp(np.clip(E / (_kb * T), -700.0, 700.0)) + 1.0)
 
         fermi_distribution = fermi(self.Evals, Temp)
         self.spectrum = self.spectrum * fermi_distribution[:, None]
@@ -191,20 +191,17 @@ class SpectralFunction:
         dE = (Emax - Emin) / nE
         E_list = [Emin + n * dE for n in range(nE)]
 
-        # generate the spectrum, use apply along axis to speed up the generation
-        img = np.array(
-            [
-                np.apply_along_axis(
-                    self._spectral,
-                    1,
-                    k_list,
-                    E,
-                    self.self_energy,
-                    self.dispersion,
-                )
-                for E in E_list
-            ]
-        )
+        # Evaluate the dispersion once per k and self-energy once per energy,
+        # instead of repeating both inside a Python loop over all E,k pixels.
+        bands = np.stack([np.atleast_1d(self.dispersion.relation(k)) for k in k_list]).T
+        energies = np.asarray(E_list)
+        sigma = np.asarray([self.self_energy(float(E)) for E in energies])
+        gamma = -sigma.imag[:, None]
+        center = energies[:, None] - sigma.real[:, None]
+        img = np.zeros((nE, nK), dtype=float)
+        for band in bands:
+            img += gamma / ((center - band[None, :]) ** 2 + gamma**2)
+        img /= np.pi
         # put the minimum value in the generated spectrum to 0
         img -= np.amin(img)
         img /= img.mean()

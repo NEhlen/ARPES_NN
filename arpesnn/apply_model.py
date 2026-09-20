@@ -1,5 +1,6 @@
 import argparse
 import csv
+import json
 import re
 from pathlib import Path
 
@@ -13,6 +14,8 @@ import torch
 import torch.nn.functional as F
 
 from nn_pytorch import Unet
+from compact_model import CompactUNet
+from sp2 import load_sp2
 
 HEADER_PAIR_RE = re.compile(r"^\s*(\w+)\s*,\s*(\w+)\s*=\s*([^,]+)\s*,\s*([^,]+)\s*$")
 DIM_RE = re.compile(r"^\s*dimX\s*,\s*dimY\s*=\s*(\d+)\s*,\s*(\d+)\s*$")
@@ -62,6 +65,35 @@ def parse_arpes_text(path: Path) -> tuple[np.ndarray, dict[str, float | int]]:
     # ArpesBandmass writes the flattened data in x-major order and mirrors Y by
     # default. Match its loader: np.array(data).reshape((dimX, dimY)).T[::-1, :]
     return np.asarray(values, dtype=np.float32).reshape(dim_x, dim_y).T[::-1, :], meta
+
+
+def load_experimental_file(path: Path, sp2_block: int = 0):
+    if path.suffix.lower() != ".sp2":
+        return parse_arpes_text(path)
+    blocks = load_sp2(path)
+    if not 0 <= sp2_block < len(blocks):
+        raise ValueError(
+            f"SP2 block {sp2_block} unavailable; file contains {len(blocks)} blocks"
+        )
+    block = blocks[sp2_block]
+    if block.energy_eV is None or block.angle_deg is None:
+        raise ValueError(
+            "Raw detector blocks need instrument correction before inference; select the corrected block."
+        )
+    meta = {
+        "dimX": block.intensity.shape[1],
+        "dimY": block.intensity.shape[0],
+        "xmin": float(block.angle_deg[0]),
+        "xmax": float(block.angle_deg[-1]),
+        "ymin": float(block.energy_eV[0]),
+        "ymax": float(block.energy_eV[-1]),
+        "x_label": "Emission angle (deg)",
+        "y_label": "Kinetic energy (eV)",
+        "coordinate_system": "kinetic_energy_angle",
+        "sp2_block": sp2_block,
+        "acquisition": block.metadata,
+    }
+    return block.intensity.astype(np.float32), meta
 
 
 def normalize_for_model(data: np.ndarray) -> tuple[np.ndarray, float]:
@@ -117,14 +149,18 @@ def build_model_input(
     input_shape: tuple[int, int],
     in_channels: int,
 ) -> np.ndarray:
-    intensity_256 = resize_array(intensity, input_shape)
+    intensity_model_grid = resize_array(intensity, input_shape)
     if in_channels == 1:
-        return intensity_256
+        return intensity_model_grid
     if in_channels != 3:
         raise ValueError(f"Unsupported checkpoint input channel count: {in_channels}.")
 
+    if meta.get("coordinate_system") == "kinetic_energy_angle":
+        raise ValueError(
+            "A 3-channel E,k model cannot use SP2 kinetic energy/angle directly. Calibrate EF and convert angle to momentum first, or use an intensity-only model."
+        )
     e_grid, k_grid = coordinate_channels(meta, input_shape)
-    return np.stack([intensity_256, e_grid, k_grid]).astype(np.float32)
+    return np.stack([intensity_model_grid, e_grid, k_grid]).astype(np.float32)
 
 
 def robust_limits(data: np.ndarray) -> tuple[float, float]:
@@ -140,8 +176,8 @@ def robust_limits(data: np.ndarray) -> tuple[float, float]:
 def plot_prediction(
     output_path: Path,
     raw_data: np.ndarray,
-    input_256: np.ndarray,
-    prediction_256: np.ndarray,
+    input_model_grid: np.ndarray,
+    prediction_model_grid: np.ndarray,
     title: str,
     meta: dict[str, float | int],
 ) -> None:
@@ -156,8 +192,8 @@ def plot_prediction(
     fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.2), constrained_layout=True)
     panels = [
         ("raw input", raw_data, extent),
-        ("model input", input_256, pred_extent),
-        ("model output", prediction_256, pred_extent),
+        ("model input", input_model_grid, pred_extent),
+        ("model output", prediction_model_grid, pred_extent),
     ]
 
     for ax, (label, data, image_extent) in zip(axes, panels, strict=True):
@@ -172,9 +208,10 @@ def plot_prediction(
             cmap="magma",
         )
         ax.set_title(label)
-        ax.set_xlabel("k")
-        ax.set_ylabel("E")
-        ax.invert_yaxis()
+        ax.set_xlabel(str(meta.get("x_label", "k")))
+        ax.set_ylabel(str(meta.get("y_label", "E")))
+        if meta.get("coordinate_system") != "kinetic_energy_angle":
+            ax.invert_yaxis()
         fig.colorbar(image, ax=ax, fraction=0.046, pad=0.04)
 
     fig.suptitle(title)
@@ -182,11 +219,18 @@ def plot_prediction(
     plt.close(fig)
 
 
-def load_model(checkpoint_path: Path, device: torch.device) -> tuple[Unet, int]:
+def load_model(
+    checkpoint_path: Path, device: torch.device
+) -> tuple[torch.nn.Module, int]:
     try:
         state_dict = torch.load(checkpoint_path, map_location=device, weights_only=True)
     except TypeError:
         state_dict = torch.load(checkpoint_path, map_location=device)
+    if state_dict.get("architecture") == "compact_unet_v1":
+        model = CompactUNet(state_dict["task"], state_dict["base_channels"]).to(device)
+        model.load_state_dict(state_dict["state_dict"])
+        model.eval()
+        return model, 1
     in_channels = int(state_dict["conv1.weight"].shape[1])
     model = Unet(in_channels=in_channels).to(device)
     model.load_state_dict(state_dict)
@@ -201,29 +245,48 @@ def apply_model_to_file(
     device: torch.device,
     input_shape: tuple[int, int],
     in_channels: int,
+    sp2_block: int = 0,
+    checkpoint_task: str = "unknown",
 ) -> dict[str, str | float | int]:
-    raw_data, meta = parse_arpes_text(path)
+    raw_data, meta = load_experimental_file(path, sp2_block)
     normalized, normalization_scale = normalize_for_model(raw_data)
     model_input = build_model_input(normalized, meta, input_shape, in_channels)
-    intensity_256 = model_input if in_channels == 1 else model_input[0]
+    intensity_model_grid = model_input if in_channels == 1 else model_input[0]
 
     with torch.no_grad():
         if in_channels == 1:
             tensor = torch.from_numpy(model_input).float()[None, None, :, :].to(device)
         else:
             tensor = torch.from_numpy(model_input).float()[None, :, :, :].to(device)
-        prediction_256 = model(tensor)[0, 0].cpu().numpy()
+        prediction_model_grid = model(tensor)[0, 0].cpu().numpy()
 
-    prediction_original_grid = resize_array(prediction_256, raw_data.shape)
+    prediction_original_grid = resize_array(prediction_model_grid, raw_data.shape)
     output_prefix = output_dir / path.stem
-    np.save(output_prefix.with_name(f"{output_prefix.name}_input_256.npy"), model_input)
+    with output_prefix.with_name(f"{output_prefix.name}_metadata.json").open(
+        "w"
+    ) as handle:
+        json.dump(
+            dict(
+                meta,
+                normalization_scale=normalization_scale,
+                output_units="normalized_training_target",
+                checkpoint_task=checkpoint_task,
+                resampled_shape=list(input_shape),
+            ),
+            handle,
+            indent=2,
+        )
     np.save(
-        output_prefix.with_name(f"{output_prefix.name}_prediction_256.npy"),
-        prediction_256,
+        output_prefix.with_name(f"{output_prefix.name}_input_model_grid.npy"),
+        model_input,
+    )
+    np.save(
+        output_prefix.with_name(f"{output_prefix.name}_prediction_model_grid.npy"),
+        prediction_model_grid,
     )
     np.savetxt(
-        output_prefix.with_name(f"{output_prefix.name}_prediction_256.txt"),
-        prediction_256,
+        output_prefix.with_name(f"{output_prefix.name}_prediction_model_grid.txt"),
+        prediction_model_grid,
     )
     np.savetxt(
         output_prefix.with_name(f"{output_prefix.name}_prediction_original_grid.txt"),
@@ -232,8 +295,8 @@ def apply_model_to_file(
     plot_prediction(
         output_prefix.with_name(f"{output_prefix.name}_model_output.png"),
         normalized,
-        intensity_256,
-        prediction_256,
+        intensity_model_grid,
+        prediction_model_grid,
         path.name,
         meta,
     )
@@ -245,10 +308,10 @@ def apply_model_to_file(
         "finite_fraction": float(np.isfinite(raw_data).mean()),
         "normalization_scale": normalization_scale,
         "input_channels": in_channels,
-        "input_256_min": float(np.nanmin(intensity_256)),
-        "input_256_max": float(np.nanmax(intensity_256)),
-        "prediction_256_min": float(np.nanmin(prediction_256)),
-        "prediction_256_max": float(np.nanmax(prediction_256)),
+        "input_model_grid_min": float(np.nanmin(intensity_model_grid)),
+        "input_model_grid_max": float(np.nanmax(intensity_model_grid)),
+        "prediction_model_grid_min": float(np.nanmin(prediction_model_grid)),
+        "prediction_model_grid_max": float(np.nanmax(prediction_model_grid)),
         "png": f"{path.stem}_model_output.png",
     }
 
@@ -283,8 +346,8 @@ def main() -> None:
     parser.add_argument(
         "--input-dir",
         type=Path,
-        default=Path("../ArpesBandmass/temp"),
-        help="Directory containing ARPES text files with #DAT payloads.",
+        default=Path("data/experiment_data/Elettra-Feb18/09"),
+        help="Directory containing SPECS SP2 files or ARPES text files with #DAT payloads.",
     )
     parser.add_argument(
         "--checkpoint",
@@ -300,8 +363,14 @@ def main() -> None:
     )
     parser.add_argument(
         "--pattern",
-        default="*.txt",
+        default="*.sp2",
         help="Glob pattern for files under --input-dir.",
+    )
+    parser.add_argument(
+        "--sp2-block",
+        type=int,
+        default=0,
+        help="Zero-based P2 block; default is the first (corrected) image.",
     )
     args = parser.parse_args()
 
@@ -313,6 +382,15 @@ def main() -> None:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model, in_channels = load_model(args.checkpoint, device)
+    metadata_path = args.checkpoint.with_suffix(".metadata.json")
+    input_shape = (256, 256)
+    checkpoint_task = "unknown"
+    if metadata_path.exists():
+        with metadata_path.open() as handle:
+            checkpoint_metadata = json.load(handle)
+        input_shape = tuple(checkpoint_metadata["input_shape"])
+        checkpoint_task = checkpoint_metadata["task"]
+        print(f"Checkpoint task: {checkpoint_metadata['task']}")
 
     rows = []
     for path in paths:
@@ -322,8 +400,10 @@ def main() -> None:
                 path=path,
                 output_dir=output_dir,
                 device=device,
-                input_shape=(256, 256),
+                input_shape=input_shape,
                 in_channels=in_channels,
+                sp2_block=args.sp2_block,
+                checkpoint_task=checkpoint_task,
             )
         )
         print(f"wrote prediction for {path.name}")

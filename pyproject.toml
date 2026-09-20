@@ -1,18 +1,22 @@
 [project]
 name = "arpes-nn"
 version = "0.1.0"
-description = "Add your description here"
+description = "Synthetic-data training and evaluation of a compact U-Net for ARPES denoising"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
-    "numpy",
+    "numpy>=2.0",
     "matplotlib",
     "pillow",
-    "torch",
-    "torchvision",
+    "torch>=2.4",
     "scipy",
     "python-dotenv",
 ]
 
 [project.optional-dependencies]
 dev = ["black"]
+
+[project.urls]
+Repository = "https://github.com/NEhlen/ARPES_NN"

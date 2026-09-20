@@ -1,6 +1,7 @@
 import inspect
 import json
 import os
+from copy import deepcopy
 from typing import Callable
 
 import matplotlib.pyplot as plt
@@ -11,6 +12,293 @@ from physics_parameters import _kb
 from spectral_function import SelfEnergy, SpectralFunction
 
 load_dotenv()
+
+
+def parabolic_band(k: np.ndarray, parameters: dict) -> np.ndarray:
+    q = k[0] - parameters["k0"]
+    bands = [
+        parameters["energy_shift"] + curvature * q**2 + offset
+        for curvature, offset in zip(parameters["curvatures"], parameters["offsets"])
+    ]
+    return np.array(bands)
+
+
+def graphene_cone(k: np.ndarray, parameters: dict) -> np.ndarray:
+    q = k[0] - parameters["k0"]
+    gap = parameters["gap"]
+    energy = np.sqrt((parameters["velocity"] * q) ** 2 + (0.5 * gap) ** 2)
+    return np.array(
+        [
+            parameters["energy_shift"] - energy,
+            parameters["energy_shift"] + energy,
+        ]
+    )
+
+
+def bilayer_graphene(k: np.ndarray, parameters: dict) -> np.ndarray:
+    q = k[0] - parameters["k0"]
+    gap = parameters["gap"]
+    split = parameters["split"]
+    curvature = parameters["curvature"]
+    base = np.sqrt((curvature * q**2) ** 2 + (0.5 * gap) ** 2)
+    return np.array(
+        [
+            parameters["energy_shift"] - base - 0.5 * split,
+            parameters["energy_shift"] - base + 0.5 * split,
+            parameters["energy_shift"] + base - 0.5 * split,
+            parameters["energy_shift"] + base + 0.5 * split,
+        ]
+    )
+
+
+def mexican_hat_band(k: np.ndarray, parameters: dict) -> np.ndarray:
+    q = k[0] - parameters["k0"]
+    band = (
+        parameters["energy_shift"]
+        + parameters["depth"]
+        + parameters["quartic"] * (q**2 - parameters["radius"] ** 2) ** 2
+    )
+    return np.array([band])
+
+
+def mos2_valence(k: np.ndarray, parameters: dict) -> np.ndarray:
+    q = k[0] - parameters["k0"]
+    top = parameters["energy_shift"] - parameters["curvature"] * q**2
+    return np.array([top, top - parameters["spin_split"]])
+
+
+BAND_FAMILIES = {
+    "parabolic": parabolic_band,
+    "four_layer_cs": parabolic_band,
+    "graphene": graphene_cone,
+    "bilayer_graphene": bilayer_graphene,
+    "mexican_hat": mexican_hat_band,
+    "mos2": mos2_valence,
+}
+
+
+def random_energy_window() -> tuple[float, float]:
+    windows = [
+        (-0.35, 0.15),
+        (-0.7, 0.3),
+        (-1.0, 1.0),
+        (-0.5, 2.5),
+        (-1.0, 3.0),
+        (0.0, 5.0),
+    ]
+    emin, emax = windows[np.random.randint(len(windows))]
+    jitter = 0.1 * (emax - emin)
+    return (
+        float(emin + np.random.uniform(-jitter, jitter)),
+        float(emax + np.random.uniform(-jitter, jitter)),
+    )
+
+
+def random_band_parameters() -> tuple[str, Callable, dict]:
+    family = str(np.random.choice(list(BAND_FAMILIES)))
+    k0 = float(np.random.uniform(-0.2, 0.2))
+
+    if family == "parabolic":
+        params = {
+            "k0": k0,
+            "energy_shift": float(np.random.uniform(-0.4, 2.5)),
+            "curvatures": [
+                float(np.random.choice([-1.0, 1.0]) * np.random.uniform(0.4, 4.0))
+            ],
+            "offsets": [0.0],
+        }
+    elif family == "four_layer_cs":
+        base = float(np.random.uniform(0.0, 4.0))
+        spacing = float(np.random.uniform(0.15, 0.8))
+        params = {
+            "k0": k0,
+            "energy_shift": base,
+            "curvatures": [
+                float(np.random.choice([-1.0, 1.0]) * np.random.uniform(0.15, 1.4))
+                for _ in range(4)
+            ],
+            "offsets": [float((i - 1.5) * spacing) for i in range(4)],
+        }
+    elif family == "graphene":
+        params = {
+            "k0": k0,
+            "energy_shift": float(np.random.uniform(-0.3, 2.5)),
+            "velocity": float(np.random.uniform(1.5, 7.0)),
+            "gap": float(np.random.uniform(0.0, 0.25)),
+        }
+    elif family == "bilayer_graphene":
+        params = {
+            "k0": k0,
+            "energy_shift": float(np.random.uniform(-0.3, 2.5)),
+            "curvature": float(np.random.uniform(1.0, 6.0)),
+            "gap": float(np.random.uniform(0.0, 0.35)),
+            "split": float(np.random.uniform(0.0, 0.35)),
+        }
+    elif family == "mexican_hat":
+        params = {
+            "k0": k0,
+            "energy_shift": float(np.random.uniform(-0.2, 2.5)),
+            "depth": float(np.random.uniform(-0.2, 0.6)),
+            "quartic": float(np.random.uniform(2.0, 18.0)),
+            "radius": float(np.random.uniform(0.12, 0.55)),
+        }
+    elif family == "mos2":
+        params = {
+            "k0": k0,
+            "energy_shift": float(np.random.uniform(-0.2, 2.5)),
+            "curvature": float(np.random.uniform(0.5, 5.0)),
+            "spin_split": float(np.random.uniform(0.08, 0.55)),
+        }
+    else:
+        raise ValueError(f"Unknown band family: {family}")
+
+    return family, BAND_FAMILIES[family], params
+
+
+def random_self_energy(kink: bool) -> dict:
+    params = {
+        "ai": float(np.random.uniform(0.001, 0.01)),
+        "bi": float(np.random.uniform(0.005, 0.05)),
+        "ar": float(np.random.uniform(0.0, 0.04)),
+    }
+    if kink:
+        n_modes = int(np.random.randint(1, 4))
+        params["CC_List"] = [
+            float(np.random.uniform(0.02, 0.18)) for _ in range(n_modes)
+        ]
+        params["Omega_List"] = [
+            float(np.random.uniform(0.04, 0.35)) for _ in range(n_modes)
+        ]
+    return params
+
+
+def add_matrix_and_background(spectrum: np.ndarray) -> np.ndarray:
+    rows, cols = spectrum.shape
+    k = np.linspace(-1.0, 1.0, cols)
+    e = np.linspace(-1.0, 1.0, rows)
+    k_center = np.random.uniform(-0.5, 0.5)
+    e_center = np.random.uniform(-0.5, 0.5)
+    k_width = np.random.uniform(0.35, 1.4)
+    e_width = np.random.uniform(0.6, 2.0)
+    k_envelope = 0.35 + 0.65 * np.exp(-((k - k_center) ** 2) / (2.0 * k_width**2))
+    e_envelope = 0.5 + 0.5 * np.exp(-((e - e_center) ** 2) / (2.0 * e_width**2))
+    output = spectrum * e_envelope[:, None] * k_envelope[None, :]
+    output += np.random.uniform(0.0, 0.12) * np.mean(output)
+
+    if np.random.random() < 0.45:
+        edge_width = np.random.randint(3, 18)
+        output[:, :edge_width] = 0.0
+    if np.random.random() < 0.45:
+        edge_width = np.random.randint(3, 18)
+        output[:, -edge_width:] = 0.0
+
+    output -= np.amin(output)
+    mean = output.mean()
+    if mean > 0.0:
+        output /= mean
+    return output
+
+
+def coordinate_channels(spectrum_params: dict) -> tuple[np.ndarray, np.ndarray]:
+    rows, cols = spectrum_params["shape"]
+    e_vals = np.linspace(
+        spectrum_params["Emin"],
+        spectrum_params["Emax"],
+        rows,
+        dtype=np.float32,
+    )
+    k_vals = np.linspace(
+        spectrum_params["kmin"][0],
+        spectrum_params["kmax"][0],
+        cols,
+        dtype=np.float32,
+    )
+    e_grid = np.repeat(e_vals[:, None], cols, axis=1)
+    k_grid = np.repeat(k_vals[None, :], rows, axis=0)
+    return e_grid, k_grid
+
+
+def build_model_input(intensity: np.ndarray, spectrum_params: dict) -> np.ndarray:
+    e_grid, k_grid = coordinate_channels(spectrum_params)
+    return np.stack([intensity.astype(np.float32), e_grid, k_grid])
+
+
+def save_training_sample(
+    output_prefix: str,
+    intensity_input: np.ndarray,
+    target: np.ndarray,
+    parameters: dict,
+    file_format: str,
+    coordinate_input: bool,
+) -> None:
+    os.makedirs(os.path.dirname(output_prefix), exist_ok=True)
+    if coordinate_input:
+        if file_format != "npy":
+            raise ValueError("Coordinate-channel inputs require DATA_FILE_FORMAT=npy.")
+        input_data = build_model_input(intensity_input, parameters["spectrum_params"])
+    else:
+        input_data = intensity_input
+
+    if file_format == "npy":
+        np.save(output_prefix + "_input.npy", input_data)
+        np.save(output_prefix + "_target.npy", target)
+    else:
+        np.savetxt(output_prefix + "_input.txt", input_data)
+        np.savetxt(output_prefix + "_target.txt", target)
+
+    with open(output_prefix + "_parameters.json", "w") as f:
+        json.dump(parameters, f, indent=2)
+
+
+def generate_diverse_sample() -> tuple[np.ndarray, np.ndarray, dict]:
+    family, dispersion_fn, dispersion_params = random_band_parameters()
+    emin, emax = random_energy_window()
+    k_span = float(np.random.uniform(0.7, 3.2))
+    k_center = float(np.random.uniform(-0.2, 0.8))
+    spectrum_params = {
+        "kmin": [k_center - 0.5 * k_span, 0.0],
+        "kmax": [k_center + 0.5 * k_span, 0.0],
+        "Emin": emin,
+        "Emax": emax,
+        "shape": (256, 256),
+    }
+    simulation_data = {
+        "energy_resolution": float(np.random.uniform(0.004, 0.06)),
+        "temperature": float(np.random.uniform(10.0, 180.0)),
+        "noise_level": float(np.random.uniform(0.05, 0.8)),
+    }
+    parameters = {
+        "family": family,
+        "dispersion_params": dispersion_params,
+        "selfenergy_params_kink": random_self_energy(kink=True),
+        "selfenergy_params_bare": random_self_energy(kink=False),
+        "spectrum_params": spectrum_params,
+        "simulation_data": simulation_data,
+    }
+
+    dispersion = Dispersion(dispersion_params, dispersion_fn)
+    spectrum_kink = SpectralFunction(
+        dispersion,
+        SelfEnergy("self-energy", parameters["selfenergy_params_kink"]),
+    ).generate_base(**spectrum_params)
+    spectrum_bare = SpectralFunction(
+        dispersion,
+        SelfEnergy("self-energy", parameters["selfenergy_params_bare"]),
+    ).generate_base(**spectrum_params)
+
+    spectrum_kink.add_energy_resolution(simulation_data["energy_resolution"])
+    spectrum_kink.add_energy_resolution(_kb * simulation_data["temperature"])
+    spectrum_kink.add_Fermi(simulation_data["temperature"])
+    spectrum_kink.add_poisson_noise(simulation_data["noise_level"])
+    spectrum_kink.spectrum = add_matrix_and_background(spectrum_kink.spectrum)
+
+    spectrum_bare.add_Fermi(simulation_data["temperature"])
+    target = deepcopy(spectrum_bare.spectrum)
+    target -= target.min()
+    if target.mean() > 0.0:
+        target /= target.mean()
+
+    return spectrum_kink.spectrum, target, parameters
 
 
 class SpectrumGenerator:
@@ -297,8 +585,14 @@ if __name__ == "__main__":
     n_new_datasets = int(os.getenv("N_NEW_DATASETS", "50"))
     save_plots = env_bool("SAVE_DATA_PLOTS", False)
     file_format = os.getenv("DATA_FILE_FORMAT", "npy").strip().lower()
+    generator_mode = os.getenv("DATASET_GENERATOR", "diverse").strip().lower()
+    coordinate_input = env_bool("COORDINATE_INPUT", file_format == "npy")
     if file_format not in {"txt", "npy"}:
         raise ValueError("DATA_FILE_FORMAT must be 'txt' or 'npy'.")
+    if coordinate_input and file_format != "npy":
+        raise ValueError("COORDINATE_INPUT=true requires DATA_FILE_FORMAT=npy.")
+    if generator_mode not in {"diverse", "graphene"}:
+        raise ValueError("DATASET_GENERATOR must be 'diverse' or 'graphene'.")
     max_existing_index = get_max_dataset_index(dataset_path)
     start_index = max_existing_index + 1
 
@@ -306,21 +600,43 @@ if __name__ == "__main__":
     print(f"Generating new datasets from index: {start_index:03d}")
     print(
         f"n_new_datasets={n_new_datasets}, save_plots={save_plots}, "
-        f"file_format={file_format}"
+        f"file_format={file_format}, generator_mode={generator_mode}, "
+        f"coordinate_input={coordinate_input}"
     )
 
     for i in range(1, n_new_datasets + 1):
         current_index = max_existing_index + i
-        print(current_index)
-        param_randomizer(params, change_params)
-        SG = SpectrumGeneratorBareband(Hamiltonian_graphene, params)
-        SG.apply()
-
-        output_prefix = os.path.join(dataset_path, f"{current_index:03d}", "graphene_test")
-        SG.save_spectra(output_prefix, file_format=file_format)
-        if save_plots:
-            SG.plot_spectrum_before_after(
-                os.path.join(dataset_path, f"{current_index:03d}", "graphene_test_image")
+        if generator_mode == "diverse":
+            intensity_input, target, sample_params = generate_diverse_sample()
+            output_prefix = os.path.join(
+                dataset_path,
+                f"{current_index:03d}",
+                f"{sample_params['family']}_test",
             )
-    if save_plots:
+            save_training_sample(
+                output_prefix,
+                intensity_input,
+                target,
+                sample_params,
+                file_format=file_format,
+                coordinate_input=coordinate_input,
+            )
+            print(f"{current_index:03d} {sample_params['family']}")
+        else:
+            print(current_index)
+            param_randomizer(params, change_params)
+            SG = SpectrumGeneratorBareband(Hamiltonian_graphene, params)
+            SG.apply()
+
+            output_prefix = os.path.join(
+                dataset_path, f"{current_index:03d}", "graphene_test"
+            )
+            SG.save_spectra(output_prefix, file_format=file_format)
+            if save_plots:
+                SG.plot_spectrum_before_after(
+                    os.path.join(
+                        dataset_path, f"{current_index:03d}", "graphene_test_image"
+                    )
+                )
+    if save_plots and generator_mode == "graphene":
         plt.show()

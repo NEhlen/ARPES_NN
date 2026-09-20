@@ -1,7 +1,10 @@
+import argparse
 import os
 import copy
 import csv
+import json
 import time
+from pathlib import Path
 from typing import Callable
 
 import numpy as np
@@ -15,14 +18,14 @@ load_dotenv()
 
 # unet with skip connections
 class Unet(nn.Module):
-    def __init__(self) -> None:
+    def __init__(self, in_channels: int = 1) -> None:
         super().__init__()
 
         # general layers
         self.relu = nn.ReLU()
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
         # encoder
-        self.conv1 = nn.Conv2d(1, 128, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(in_channels, 128, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm2d(128)
         self.conv2 = nn.Conv2d(128, 64, kernel_size=3, padding=1)
         self.bn2 = nn.BatchNorm2d(64)
@@ -75,23 +78,101 @@ class Unet(nn.Module):
         return self.out(xd2)  # outputs 256x256x1
 
 
-def load_data(base_folder: str):
+def coordinate_channels_from_params(
+    shape: tuple[int, int],
+    parameters: dict | None,
+) -> tuple[np.ndarray, np.ndarray]:
+    spectrum_params = (parameters or {}).get("spectrum_params", {})
+    rows, cols = shape
+    emin = float(spectrum_params.get("Emin", -1.0))
+    emax = float(spectrum_params.get("Emax", 1.0))
+    kmin = spectrum_params.get("kmin", [-1.0])
+    kmax = spectrum_params.get("kmax", [1.0])
+    kmin_scalar = float(kmin[0] if isinstance(kmin, list) else kmin)
+    kmax_scalar = float(kmax[0] if isinstance(kmax, list) else kmax)
+    e_vals = np.linspace(emin, emax, rows, dtype=np.float32)
+    k_vals = np.linspace(kmin_scalar, kmax_scalar, cols, dtype=np.float32)
+    return (
+        np.repeat(e_vals[:, None], cols, axis=1),
+        np.repeat(k_vals[None, :], rows, axis=0),
+    )
+
+
+def promote_to_coordinate_input(
+    intensity: np.ndarray,
+    parameters: dict | None,
+) -> np.ndarray:
+    e_grid, k_grid = coordinate_channels_from_params(intensity.shape, parameters)
+    return np.stack([intensity.astype(np.float32), e_grid, k_grid])
+
+
+def load_data(base_folder: str, expected_task: str | None = None):
+    samples = []
+    for sample_dir in sorted(Path(base_folder).iterdir()):
+        if not sample_dir.is_dir():
+            continue
+        input_files = sorted(sample_dir.glob("*_input.npy")) + sorted(
+            sample_dir.glob("*_input.txt")
+        )
+        for input_path in input_files:
+            prefix = input_path.name.rsplit("_input.", 1)[0]
+            target_path = input_path.with_name(f"{prefix}_target{input_path.suffix}")
+            if not target_path.exists():
+                continue
+            params_path = input_path.with_name(f"{prefix}_parameters.json")
+            parameters = None
+            if params_path.exists():
+                with params_path.open() as f:
+                    parameters = json.load(f)
+            if input_path.suffix == ".npy":
+                input_data = np.load(input_path)
+                target_data = np.load(target_path)
+            else:
+                input_data = np.loadtxt(input_path)
+                target_data = np.loadtxt(target_path)
+            samples.append((input_data, target_data, parameters))
+
+    if not samples:
+        raise ValueError(f"No input/target samples found under {base_folder}.")
+
+    tasks = {(parameters or {}).get("task", "legacy") for _, _, parameters in samples}
+    if len(tasks) != 1 or (expected_task is not None and tasks != {expected_task}):
+        raise ValueError(
+            f"Dataset task mismatch: found {tasks}, expected {expected_task}."
+        )
+    if expected_task in {"denoise", "bareband"}:
+        shapes = {input_data.shape for input_data, _, _ in samples}
+        if len(shapes) != 1:
+            raise ValueError(
+                "Task datasets must have consistent input shapes/channels."
+            )
+        for input_data, target_data, _ in samples:
+            if (
+                input_data.ndim not in (2, 3)
+                or target_data.shape != input_data.shape[-2:]
+            ):
+                raise ValueError("Input and target spatial shapes must agree.")
+            if not np.isfinite(input_data).all() or not np.isfinite(target_data).all():
+                raise ValueError("Training samples must be finite.")
+
+    use_coordinate_inputs = any(input_data.ndim == 3 for input_data, _, _ in samples)
     input_list = []
     output_list = []
-    for fldr in os.listdir(base_folder):
-        if fldr != ".gitkeep":
-            for file in os.listdir(base_folder + "/" + fldr):
-                path = base_folder + "/" + fldr + "/" + file
-                suffix = file.split("_")[-1]
-                if suffix == "input.txt":
-                    input_list.append(np.loadtxt(path))
-                elif suffix == "target.txt":
-                    output_list.append(np.loadtxt(path))
-                elif suffix == "input.npy":
-                    input_list.append(np.load(path))
-                elif suffix == "target.npy":
-                    output_list.append(np.load(path))
+    for input_data, target_data, parameters in samples:
+        if use_coordinate_inputs and input_data.ndim == 2:
+            input_data = promote_to_coordinate_input(input_data, parameters)
+        input_list.append(input_data)
+        output_list.append(target_data)
+
     return np.array(input_list), np.array(output_list)
+
+
+def ensure_channel_dimension(data: torch.Tensor) -> torch.Tensor:
+    if data.ndim == 3:
+        return data.unsqueeze(1)
+    if data.ndim == 4:
+        return data
+    raise ValueError(f"Expected data with 3 or 4 dimensions, got shape {data.shape}.")
 
 
 def evaluate(
@@ -100,6 +181,7 @@ def evaluate(
     device: torch.device,
     loss_fn: nn.Module | Callable[[torch.Tensor, torch.Tensor], torch.Tensor],
     amp_enabled: bool,
+    l1_lambda: float,
 ) -> float:
     network.eval()
     total_loss = 0.0
@@ -153,6 +235,10 @@ def train(
     ),
 ) -> float:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    if epochs < 1 or batch_size < 1 or not 0 <= val_split < 1:
+        raise ValueError("Require positive epochs/batch_size and 0 <= val_split < 1")
+    if model_save_path is not None:
+        Path(model_save_path).parent.mkdir(parents=True, exist_ok=True)
     amp_enabled = use_amp and device.type == "cuda"
     if num_workers is None:
         num_workers = min(8, os.cpu_count() or 1)
@@ -278,7 +364,7 @@ def train(
         train_data_loss = epoch_data_loss / max(seen_samples, 1)
         train_reg_loss = epoch_reg_loss / max(seen_samples, 1)
         val_loss = (
-            evaluate(network, val_loader, device, loss_fn, amp_enabled)
+            evaluate(network, val_loader, device, loss_fn, amp_enabled, l1_lambda)
             if val_size > 0
             else train_loss
         )
@@ -358,32 +444,89 @@ def train(
 
 
 if __name__ == "__main__":
-    dataset_path = os.getenv("DATASET_PATH")
-    models_path = os.getenv("MODELS_PATH")
+    parser = argparse.ArgumentParser(
+        description="Train separate denoise/bareband models or the legacy dataset."
+    )
+    parser.add_argument(
+        "--task", choices=("legacy", "denoise", "bareband"), default="legacy"
+    )
+    parser.add_argument(
+        "--dataset-root", default=os.getenv("DATASET_PATH", "arpesnn/dataset")
+    )
+    parser.add_argument(
+        "--models-root", default=os.getenv("MODELS_PATH", "arpesnn/models")
+    )
+    parser.add_argument("--epochs", type=int, default=int(os.getenv("EPOCHS", "500")))
+    parser.add_argument(
+        "--batch-size", type=int, default=int(os.getenv("BATCH_SIZE", "8"))
+    )
+    parser.add_argument("--workers", type=int, default=0)
+    parser.add_argument("--seed", type=int, default=42)
+    args = parser.parse_args()
+    dataset_path = (
+        str(Path(args.dataset_root) / args.task)
+        if args.task != "legacy"
+        else args.dataset_root
+    )
+    models_path = (
+        str(Path(args.models_root) / args.task)
+        if args.task != "legacy"
+        else args.models_root
+    )
+    torch.manual_seed(args.seed)
+    np.random.seed(args.seed)
+    Path(models_path).mkdir(parents=True, exist_ok=True)
     if not dataset_path:
         raise ValueError("DATASET_PATH is not set. Add it to your .env file.")
     if not models_path:
         raise ValueError("MODELS_PATH is not set. Add it to your .env file.")
     weight_decay = float(os.getenv("WEIGHT_DECAY", "1e-4"))
     l1_lambda = float(os.getenv("L1_LAMBDA", "0.0"))
+    epochs = args.epochs
+    batch_size = args.batch_size
+    early_stopping_patience = int(os.getenv("EARLY_STOPPING_PATIENCE", "50"))
+    learning_rate = float(os.getenv("LEARNING_RATE", "1e-4"))
 
-    in_data, target_data = load_data(dataset_path)
-    in_data = torch.tensor(in_data, dtype=torch.float32).unsqueeze(1)
-    target_data = torch.tensor(target_data, dtype=torch.float32).unsqueeze(1)
-    arpes_unet = Unet()
+    in_data, target_data = load_data(dataset_path, expected_task=args.task)
+    if args.task != "legacy" and len(in_data) < 4:
+        raise ValueError(
+            "At least four samples are required for task training with validation."
+        )
+    in_data = ensure_channel_dimension(torch.tensor(in_data, dtype=torch.float32))
+    target_data = ensure_channel_dimension(
+        torch.tensor(target_data, dtype=torch.float32)
+    )
+    arpes_unet = Unet(in_channels=in_data.shape[1])
     final_loss = train(
         arpes_unet,
         in_data,
         target_data,
         loss_fn=torch.nn.MSELoss(),
-        epochs=100000,
-        batch_size=8,
-        lr=1e-4,
+        epochs=epochs,
+        batch_size=batch_size,
+        lr=learning_rate,
+        num_workers=args.workers,
+        random_seed=args.seed,
         val_split=0.3,
-        early_stopping_patience=100000,
+        early_stopping_patience=early_stopping_patience,
         weight_decay=weight_decay,
         l1_lambda=l1_lambda,
         model_save_path=os.path.join(models_path, "best_model.pt"),
         metrics_csv_path=os.path.join(models_path, "training_metrics.csv"),
     )
+    metadata = {
+        "task": args.task,
+        "dataset_path": str(Path(dataset_path).resolve()),
+        "input_channels": int(in_data.shape[1]),
+        "input_shape": list(in_data.shape[-2:]),
+        "seed": args.seed,
+        "validation_fraction": 0.3,
+        "normalization": "divide_intensity_by_input_mean",
+        "epochs_requested": epochs,
+        "sample_directories": [
+            p.name for p in sorted(Path(dataset_path).iterdir()) if p.is_dir()
+        ],
+    }
+    with (Path(models_path) / "best_model.metadata.json").open("w") as handle:
+        json.dump(metadata, handle, indent=2)
     print(f"best train loss: {final_loss:.6f}")

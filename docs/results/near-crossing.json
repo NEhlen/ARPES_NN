@@ -1,0 +1,134 @@
+{
+  "crossing/5.0": {
+    "raw": {
+      "mean_splitting_meV": 65.32533443240054,
+      "median_splitting_meV": 39.35464923434316,
+      "two_component_detection_fraction": 0.0
+    },
+    "network": {
+      "mean_splitting_meV": 74.22696904871405,
+      "median_splitting_meV": 20.85017138038353,
+      "two_component_detection_fraction": 0.20833333333333334
+    },
+    "gaussian": {
+      "mean_splitting_meV": 90.26718215496112,
+      "median_splitting_meV": 42.622180412837636,
+      "two_component_detection_fraction": 0.041666666666666664
+    },
+    "fourier": {
+      "mean_splitting_meV": 89.5100812038936,
+      "median_splitting_meV": 45.11676381100265,
+      "two_component_detection_fraction": 0.041666666666666664
+    }
+  },
+  "crossing/30.0": {
+    "raw": {
+      "mean_splitting_meV": 51.335174163024625,
+      "median_splitting_meV": 24.910378574358873,
+      "two_component_detection_fraction": 0.125
+    },
+    "network": {
+      "mean_splitting_meV": 25.936804407834,
+      "median_splitting_meV": 15.498040711263968,
+      "two_component_detection_fraction": 0.20833333333333334
+    },
+    "gaussian": {
+      "mean_splitting_meV": 69.18829957317429,
+      "median_splitting_meV": 24.25364139891681,
+      "two_component_detection_fraction": 0.125
+    },
+    "fourier": {
+      "mean_splitting_meV": 52.45905111491149,
+      "median_splitting_meV": 17.050495248823196,
+      "two_component_detection_fraction": 0.16666666666666666
+    }
+  },
+  "crossing/200.0": {
+    "raw": {
+      "mean_splitting_meV": 31.05052091429255,
+      "median_splitting_meV": 14.197662413561865,
+      "two_component_detection_fraction": 0.20833333333333334
+    },
+    "network": {
+      "mean_splitting_meV": 21.999440828514324,
+      "median_splitting_meV": 11.265060401409816,
+      "two_component_detection_fraction": 1.0
+    },
+    "gaussian": {
+      "mean_splitting_meV": 57.78671103005871,
+      "median_splitting_meV": 17.31063255493985,
+      "two_component_detection_fraction": 0.375
+    },
+    "fourier": {
+      "mean_splitting_meV": 66.31376186570058,
+      "median_splitting_meV": 16.0905236297724,
+      "two_component_detection_fraction": 0.125
+    }
+  },
+  "avoided_crossing/5.0": {
+    "raw": {
+      "mean_splitting_meV": 46.9392320893773,
+      "median_splitting_meV": 33.549321291766645,
+      "two_component_detection_fraction": 0.16666666666666666
+    },
+    "network": {
+      "mean_splitting_meV": 28.82529272308589,
+      "median_splitting_meV": 28.804648803869682,
+      "two_component_detection_fraction": 1.0
+    },
+    "gaussian": {
+      "mean_splitting_meV": 35.523054544691895,
+      "median_splitting_meV": 29.378657669242568,
+      "two_component_detection_fraction": 0.75
+    },
+    "fourier": {
+      "mean_splitting_meV": 38.89626515315609,
+      "median_splitting_meV": 28.562773098079013,
+      "two_component_detection_fraction": 0.7083333333333334
+    }
+  },
+  "avoided_crossing/30.0": {
+    "raw": {
+      "mean_splitting_meV": 46.217679018336064,
+      "median_splitting_meV": 32.08950981943293,
+      "two_component_detection_fraction": 0.7916666666666666
+    },
+    "network": {
+      "mean_splitting_meV": 29.78978191099249,
+      "median_splitting_meV": 29.80420813425455,
+      "two_component_detection_fraction": 1.0
+    },
+    "gaussian": {
+      "mean_splitting_meV": 30.481835777732076,
+      "median_splitting_meV": 30.64362010170564,
+      "two_component_detection_fraction": 1.0
+    },
+    "fourier": {
+      "mean_splitting_meV": 29.418867432941102,
+      "median_splitting_meV": 29.301749926198774,
+      "two_component_detection_fraction": 1.0
+    }
+  },
+  "avoided_crossing/200.0": {
+    "raw": {
+      "mean_splitting_meV": 29.60900582208105,
+      "median_splitting_meV": 29.629147601574672,
+      "two_component_detection_fraction": 1.0
+    },
+    "network": {
+      "mean_splitting_meV": 30.033662580948487,
+      "median_splitting_meV": 30.09346129921928,
+      "two_component_detection_fraction": 1.0
+    },
+    "gaussian": {
+      "mean_splitting_meV": 29.816823908354337,
+      "median_splitting_meV": 29.88304015149597,
+      "two_component_detection_fraction": 1.0
+    },
+    "fourier": {
+      "mean_splitting_meV": 29.72179075115378,
+      "median_splitting_meV": 29.775802089572213,
+      "two_component_detection_fraction": 1.0
+    }
+  }
+}
