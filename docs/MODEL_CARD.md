@@ -1,10 +1,12 @@
 # Model card: compact ARPES denoiser
 
+This card describes the denoiser. The separate [background-model card and results](BACKGROUND.md) describe additive subtraction and its different input/output contract.
+
 ## Intended use
 
 Exploratory denoising of nonnegative energy–momentum/angle intensity images and evaluation of synthetic-data training. The model is a small residual U-Net, not a physical inverse solver. It is not intended to determine a self-energy, establish a small band gap, or replace raw-data analysis.
 
-The code is distributed separately from trained weights. The local reference checkpoint is `training_v2_20260919/denoise/best_model.pt`; there is no assumed public download. The prepared release bundle includes the MIT license and can be uploaded separately. Synthetic figures and compact benchmark summaries are included so results remain readable without the checkpoint.
+The code is distributed separately from trained weights. The local reference checkpoint is `training_v2_20260919/denoise/best_model.pt`; weights are available in the [v0.1.0 prerelease](https://github.com/NEhlen/ARPES_NN/releases/tag/v0.1.0). The prepared release bundle includes the MIT license and can be uploaded separately. Synthetic figures and compact benchmark summaries are included so results remain readable without the checkpoint.
 
 ## Inputs and outputs
 

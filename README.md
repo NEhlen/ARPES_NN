@@ -47,7 +47,7 @@ Training uses CUDA when available and otherwise CPU. Add `--require-cuda` for a 
 
 ### Denoise an image
 
-Use your trained checkpoint, or a separately distributed checkpoint if one is available. **No download URL or published release is assumed here.**
+Use your trained checkpoint, or download the [reference denoiser from the v0.1.0 prerelease](https://github.com/NEhlen/ARPES_NN/releases/download/v0.1.0/arpes-denoiser-v1.tar.gz). The downloaded model uses a 256 × 256 grid; use its `denoiser.pt` with `--size 256`, rather than the 64 × 64 smoke-model settings below.
 
 ```bash
 uv run python arpesnn/denoise.py \
@@ -153,12 +153,37 @@ Use it as an exploratory preprocessing tool. Validate a quantitative result agai
 | `arpesnn/corpus.py`, `band_models.py` | Synthetic configurations and targets |
 | `arpesnn/compact_model.py`, `train_tasks.py` | Reference network and training |
 | `arpesnn/sp2.py` | Corrected SP2 loading |
+| `arpesnn/background_data.py`, `train_background.py`, `apply_background.py` | Separate background simulation, training and inference |
 | `arpesnn/benchmark_denoising.py` | Validation-tuned image reconstruction benchmark |
 | `arpesnn/benchmark_overlap.py`, `report_overlap.py` | Downstream component-fitting benchmark |
 | `docs/` | Model card, methods, figures and compact numeric results |
 | `tests/` | CPU regression tests; no local measurements required |
 
 The older `generate_data.py`, `generate_tasks.py`, `nn_pytorch.py` and `apply_model.py` workflows are retained for historical compatibility. The tracked `example_dataset` is a **legacy bare-band example**, not a denoising training set. The separate bare-band/self-energy-removal experiment remains exploratory; it is not the recommended workflow. Old plotting helpers reference the original local run and are not required for the quickstart.
+
+## Separate experiment: background estimation
+
+An optional [background estimator](docs/BACKGROUND.md) predicts a smooth nonnegative additive background and saves both the estimate and the signed corrected spectrum. **Subtraction leaves counting noise and is different from denoising.** Intrinsic broadening and broad/weak spectral features remain part of the synthetic signal target.
+
+The new **v2 checkpoint** was trained with balanced background strength and local band contrast, including backgrounds 2–20 times stronger than the local band signal. On identical harder synthetic test images, mean relative subtraction error around bands decreases from **0.431 for v1 to 0.106 for v2**. That metric is background-estimation RMS error divided by true signal RMS in signal-defined ridge neighbourhoods, averaged over images.
+
+There are useful fitting improvements: under locally comparable backgrounds, close-doublet center error falls from **59.6 to 3.6 meV**, and weak-doublet error from **29.0 to 4.9 meV**. But a buried close doublet still has about **100 meV** error, some easier cases regress, and band-shaped artifacts remain in background estimates. This is an exploratory baseline, **not reliable band-preserving subtraction**.
+
+![Background v2 on five experimental acquisitions](docs/figures/background-v2-experimental-five.png)
+
+*Five evenly spaced acquisitions from the available local filename sequence (061, 065, 069, 073, 077), chosen before inference. Each row shows original acquisition, resampled input, estimated background and subtraction. Spectra share a scale within each row; backgrounds use a separate labelled scale. About 13–43% of integrated intensity is subtracted. That is a model estimate, not a measured extrinsic fraction. Band-like structures in the estimates indicate possible signal removal. No experimental decomposition ground truth is available; these are acquisitions from one session, not five materials.*
+
+[New synthetic examples](docs/figures/background-v2-test-v2.png) · [Old model on identical examples](docs/figures/background-v2-test-v1.png) · [Model, commands and complete results](docs/BACKGROUND.md) · [v0.2.0 release notes](docs/RELEASE_NOTES.md)
+
+The background checkpoint is prepared as a separate release attachment. Until v0.2.0 is published, use your own trained checkpoint or a locally prepared archive; no background download URL is assumed. With the extracted background archive:
+
+```bash
+uv run python arpesnn/apply_background.py --input /path/to/spectrum.sp2 \
+  --checkpoint /path/to/arpes-background-v2/background.pt \
+  --output outputs/background-preview
+```
+
+Keep the original and estimated background. Do not pass signed corrected arrays directly into the denoiser: it expects nonnegative measurements, and a combined pipeline has not been validated. The v1 background model remains documented for comparison; it is not the primary background asset for this release.
 
 ## Development and reuse
 
@@ -169,4 +194,4 @@ uv run black --check arpesnn tests
 
 CPU CI tests the synthetic pipeline and a small training/inference run. Contributions that improve experimental validation, noise realism, uncertainty estimation or reproducibility are particularly useful; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-**License:** [MIT](LICENSE), including the project code, documentation and prepared pretrained-denoiser weights. See [publication notes](docs/PUBLISHING.md) for optional weight distribution.
+**License:** [MIT](LICENSE), including the project code, documentation and prepared pretrained weights. See [publication notes](docs/PUBLISHING.md) for optional weight distribution.

@@ -1,5 +1,7 @@
 # Simulation and training
 
+For the separate background task, see [background generation, training and reference results](BACKGROUND.md). Its targets and checkpoint are distinct from denoising.
+
 ## Reproduce the reference-sized corpus
 
 From the repository root, with dependencies installed:

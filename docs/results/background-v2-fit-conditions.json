@@ -1,0 +1,110 @@
+[
+  {
+    "case": "single",
+    "kind": "none",
+    "background_to_signal_mean": 0.0,
+    "regime": "zero",
+    "local_signal_to_background": -1.0,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "single",
+    "kind": "step",
+    "background_to_signal_mean": 12.321196556091309,
+    "regime": "local_comparable",
+    "local_signal_to_background": 0.6220892071723938,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "single",
+    "kind": "mixture",
+    "background_to_signal_mean": 63.812522888183594,
+    "regime": "local_buried",
+    "local_signal_to_background": 0.10346926003694534,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "double_0.7",
+    "kind": "none",
+    "background_to_signal_mean": 0.0,
+    "regime": "zero",
+    "local_signal_to_background": -1.0,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "double_0.7",
+    "kind": "step",
+    "background_to_signal_mean": 7.284696578979492,
+    "regime": "local_comparable",
+    "local_signal_to_background": 0.6313573122024536,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "double_0.7",
+    "kind": "mixture",
+    "background_to_signal_mean": 36.35717010498047,
+    "regime": "local_buried",
+    "local_signal_to_background": 0.1251475065946579,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "weak_double",
+    "kind": "none",
+    "background_to_signal_mean": 0.0,
+    "regime": "zero",
+    "local_signal_to_background": -1.0,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "weak_double",
+    "kind": "correlated",
+    "background_to_signal_mean": 5.776755332946777,
+    "regime": "local_comparable",
+    "local_signal_to_background": 1.015981912612915,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "weak_double",
+    "kind": "mixture",
+    "background_to_signal_mean": 14.318288803100586,
+    "regime": "local_buried",
+    "local_signal_to_background": 0.41241827607154846,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "broad_incoherent",
+    "kind": "none",
+    "background_to_signal_mean": 0.0,
+    "regime": "zero",
+    "local_signal_to_background": -1.0,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "broad_incoherent",
+    "kind": "step",
+    "background_to_signal_mean": 17.653993606567383,
+    "regime": "local_comparable",
+    "local_signal_to_background": 0.5251196622848511,
+    "total_mean_counts": 300,
+    "repeats": 12
+  },
+  {
+    "case": "broad_incoherent",
+    "kind": "mixture",
+    "background_to_signal_mean": 29.812530517578125,
+    "regime": "local_buried",
+    "local_signal_to_background": 0.1678818017244339,
+    "total_mean_counts": 300,
+    "repeats": 12
+  }
+]

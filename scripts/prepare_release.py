@@ -19,13 +19,20 @@ def main():
     if args.output.exists() or archive.exists():
         p.error("Output already exists; choose a new name.")
     bundle = torch.load(args.checkpoint, map_location="cpu", weights_only=True)
-    if (
-        bundle.get("architecture") != "compact_unet_v1"
-        or bundle.get("task") != "denoise"
-    ):
-        p.error("Expected a compact denoiser checkpoint.")
+    variants = {
+        ("compact_unet_v1", "denoise"): ("denoiser.pt", "denoise.py", "MODEL_CARD.md"),
+        ("background_coarse_v1", "background"): (
+            "background.pt",
+            "apply_background.py",
+            "BACKGROUND.md",
+        ),
+    }
+    variant = variants.get((bundle.get("architecture"), bundle.get("task")))
+    if variant is None:
+        p.error("Expected a compact denoiser or coarse background checkpoint.")
+    weight_name, inference_script, model_card = variant
     args.output.mkdir(parents=True)
-    shutil.copy2(args.checkpoint, args.output / "denoiser.pt")
+    shutil.copy2(args.checkpoint, args.output / weight_name)
     metadata = {
         key: bundle[key]
         for key in (
@@ -37,6 +44,8 @@ def main():
             "epoch",
             "validation",
             "corpus_manifest_sha256",
+            "corpus_sha256",
+            "profile",
         )
         if key in bundle
     }
@@ -52,11 +61,22 @@ def main():
         else "Not selected; no reuse license granted by this archive"
     )
     (args.output / "model.json").write_text(json.dumps(metadata, indent=2) + "\n")
-    shutil.copy2(root / "docs/MODEL_CARD.md", args.output / "MODEL_CARD.md")
+    if bundle["task"] == "background":
+        metadata["output_contract"] = (
+            "nonnegative additive background; corrected = input - background, "
+            "signed without clipping; background shot noise remains"
+        )
+        metadata["model_grid"] = 128
+        metadata["background_grid"] = 32
+        (args.output / "model.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    shutil.copy2(root / "docs" / model_card, args.output / "MODEL_CARD.md")
     if (root / "LICENSE").exists():
         shutil.copy2(root / "LICENSE", args.output / "LICENSE")
     (args.output / "README.txt").write_text(
-        "Inference weights for https://github.com/NEhlen/ARPES_NN\nUse arpesnn/denoise.py --checkpoint <this folder>/denoiser.pt.\nSee the repository docs for training and evaluation details.\nModel-card relative links refer to repository docs.\n"
+        "Inference weights for https://github.com/NEhlen/ARPES_NN\n"
+        f"Use arpesnn/{inference_script} --checkpoint <this folder>/{weight_name}.\n"
+        "See the repository docs for training and evaluation details.\n"
+        "Model-card relative links refer to repository docs.\n"
         + metadata["license"]
         + "\n"
     )

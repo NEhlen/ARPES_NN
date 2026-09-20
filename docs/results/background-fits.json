@@ -1,0 +1,274 @@
+{
+  "single": {
+    "none": {
+      "raw": {
+        "center_mae_meV": 0.30486925867624076,
+        "width_mae_meV": 0.8987426604313333,
+        "area_relative_mae": 0.012293145348307275
+      },
+      "network": {
+        "center_mae_meV": 0.3031811026365442,
+        "width_mae_meV": 0.8659708113650094,
+        "area_relative_mae": 0.011773180973602899
+      },
+      "lower_envelope": {
+        "center_mae_meV": 1.6255554333645017,
+        "width_mae_meV": 7.665072846962341,
+        "area_relative_mae": 0.26469554275626545
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 0.30486925867624076,
+        "width_mae_meV": 0.8987426604313333,
+        "area_relative_mae": 0.012293145348307275
+      }
+    },
+    "hump": {
+      "raw": {
+        "center_mae_meV": 0.5201449470265012,
+        "width_mae_meV": 5.622115668063993,
+        "area_relative_mae": 0.14472004520999718
+      },
+      "network": {
+        "center_mae_meV": 0.8420494910634445,
+        "width_mae_meV": 1.762747048197362,
+        "area_relative_mae": 0.0187894730071681
+      },
+      "lower_envelope": {
+        "center_mae_meV": 2.4390905661598583,
+        "width_mae_meV": 9.880638215350285,
+        "area_relative_mae": 0.29815198211883354
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 0.4367588968574132,
+        "width_mae_meV": 1.0758454797231065,
+        "area_relative_mae": 0.01243675894883781
+      }
+    },
+    "correlated": {
+      "raw": {
+        "center_mae_meV": 0.2938682701312104,
+        "width_mae_meV": 0.9344486416998773,
+        "area_relative_mae": 0.014021174565941158
+      },
+      "network": {
+        "center_mae_meV": 0.2965160245710391,
+        "width_mae_meV": 0.9675555119689597,
+        "area_relative_mae": 0.014419945783896385
+      },
+      "lower_envelope": {
+        "center_mae_meV": 1.6878946505527574,
+        "width_mae_meV": 7.614550254972286,
+        "area_relative_mae": 0.26638203833109747
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 0.28727732144067425,
+        "width_mae_meV": 0.8642079163123522,
+        "area_relative_mae": 0.012897799311081395
+      }
+    }
+  },
+  "double_0.7": {
+    "none": {
+      "raw": {
+        "center_mae_meV": 2.7369071783212897,
+        "width_mae_meV": 4.18672742075346,
+        "area_relative_mae": 0.21726255572049843
+      },
+      "network": {
+        "center_mae_meV": 2.6882899158833555,
+        "width_mae_meV": 4.07419177734802,
+        "area_relative_mae": 0.21190093677836902
+      },
+      "lower_envelope": {
+        "center_mae_meV": 2.480997066847445,
+        "width_mae_meV": 11.287615709896878,
+        "area_relative_mae": 0.3534375560066805
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 2.7369071783212897,
+        "width_mae_meV": 4.18672742075346,
+        "area_relative_mae": 0.21726255572049843
+      }
+    },
+    "hump": {
+      "raw": {
+        "center_mae_meV": 2.5561105977520193,
+        "width_mae_meV": 4.36581940722301,
+        "area_relative_mae": 0.21128344416885264
+      },
+      "network": {
+        "center_mae_meV": 2.555925433656358,
+        "width_mae_meV": 4.349267595336657,
+        "area_relative_mae": 0.21282224676216915
+      },
+      "lower_envelope": {
+        "center_mae_meV": 2.249901172683999,
+        "width_mae_meV": 11.882908787245785,
+        "area_relative_mae": 0.3656475333641093
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 2.436896287391086,
+        "width_mae_meV": 4.101944818807695,
+        "area_relative_mae": 0.1973449337167068
+      }
+    },
+    "correlated": {
+      "raw": {
+        "center_mae_meV": 3.158004613222231,
+        "width_mae_meV": 8.69516696048402,
+        "area_relative_mae": 0.3642236030655987
+      },
+      "network": {
+        "center_mae_meV": 2.0481880589814514,
+        "width_mae_meV": 4.653181056185937,
+        "area_relative_mae": 0.14850844999775506
+      },
+      "lower_envelope": {
+        "center_mae_meV": 2.5936154037128407,
+        "width_mae_meV": 12.801252760626733,
+        "area_relative_mae": 0.38264241381031794
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 2.4468675049246285,
+        "width_mae_meV": 3.8940594997489577,
+        "area_relative_mae": 0.19349308747230068
+      }
+    }
+  },
+  "weak_double": {
+    "none": {
+      "raw": {
+        "center_mae_meV": 5.032377889918217,
+        "width_mae_meV": 6.42793411698628,
+        "area_relative_mae": 0.6347123694232104
+      },
+      "network": {
+        "center_mae_meV": 4.699156271736564,
+        "width_mae_meV": 6.023558364193338,
+        "area_relative_mae": 0.5619730971701495
+      },
+      "lower_envelope": {
+        "center_mae_meV": 12.934251052883349,
+        "width_mae_meV": 13.93356148836743,
+        "area_relative_mae": 0.9081724108702841
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 5.032377889918217,
+        "width_mae_meV": 6.42793411698628,
+        "area_relative_mae": 0.6347123694232104
+      }
+    },
+    "hump": {
+      "raw": {
+        "center_mae_meV": 5.6776164611020565,
+        "width_mae_meV": 8.600117126544921,
+        "area_relative_mae": 0.7680983894755425
+      },
+      "network": {
+        "center_mae_meV": 5.687659001026179,
+        "width_mae_meV": 8.662260172151898,
+        "area_relative_mae": 0.7686045430045304
+      },
+      "lower_envelope": {
+        "center_mae_meV": 14.655481493211608,
+        "width_mae_meV": 13.509022452388567,
+        "area_relative_mae": 1.021201849533639
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 5.296850791474446,
+        "width_mae_meV": 7.87390115189198,
+        "area_relative_mae": 0.6843650259909517
+      }
+    },
+    "correlated": {
+      "raw": {
+        "center_mae_meV": 5.008175717318749,
+        "width_mae_meV": 9.619875518069142,
+        "area_relative_mae": 0.644019818619108
+      },
+      "network": {
+        "center_mae_meV": 4.992917101451513,
+        "width_mae_meV": 9.87396612107673,
+        "area_relative_mae": 0.6453757429360256
+      },
+      "lower_envelope": {
+        "center_mae_meV": 13.983797072128192,
+        "width_mae_meV": 13.63092899364485,
+        "area_relative_mae": 0.9414804221992762
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 4.664550661363538,
+        "width_mae_meV": 7.342058549333962,
+        "area_relative_mae": 0.5289301616066735
+      }
+    }
+  },
+  "broad_incoherent": {
+    "none": {
+      "raw": {
+        "center_mae_meV": 3.585635336841962,
+        "width_mae_meV": 15.956154820068985,
+        "area_relative_mae": 0.3799936940080126
+      },
+      "network": {
+        "center_mae_meV": 3.6551510981027646,
+        "width_mae_meV": 15.882960135988661,
+        "area_relative_mae": 0.39120913762431436
+      },
+      "lower_envelope": {
+        "center_mae_meV": 15.117587800662596,
+        "width_mae_meV": 42.24819963832967,
+        "area_relative_mae": 0.5255435992899754
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 3.585635336841962,
+        "width_mae_meV": 15.956154820068985,
+        "area_relative_mae": 0.3799936940080126
+      }
+    },
+    "hump": {
+      "raw": {
+        "center_mae_meV": 3.785569639369245,
+        "width_mae_meV": 15.945525425908935,
+        "area_relative_mae": 0.2711513313835241
+      },
+      "network": {
+        "center_mae_meV": 3.790772777003272,
+        "width_mae_meV": 15.131968160289574,
+        "area_relative_mae": 0.26608184359784764
+      },
+      "lower_envelope": {
+        "center_mae_meV": 16.919496272359982,
+        "width_mae_meV": 44.0513925826641,
+        "area_relative_mae": 0.5194020858716117
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 4.004772860550606,
+        "width_mae_meV": 13.54922362549213,
+        "area_relative_mae": 0.2651611953531519
+      }
+    },
+    "correlated": {
+      "raw": {
+        "center_mae_meV": 58.56221542706512,
+        "width_mae_meV": 98.59856401145844,
+        "area_relative_mae": 2.623212279791249
+      },
+      "network": {
+        "center_mae_meV": 11.373738526688552,
+        "width_mae_meV": 30.723499795102814,
+        "area_relative_mae": 0.4771774793609188
+      },
+      "lower_envelope": {
+        "center_mae_meV": 24.330808016948176,
+        "width_mae_meV": 48.69931398214741,
+        "area_relative_mae": 0.5076750867850145
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 6.53682502595758,
+        "width_mae_meV": 22.269958108643063,
+        "area_relative_mae": 0.33319402719581137
+      }
+    }
+  }
+}

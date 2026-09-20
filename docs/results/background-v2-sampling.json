@@ -1,0 +1,281 @@
+{
+  "validation": {
+    "zero": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_signal_background_quantiles": [
+        -1.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    "mean_weak": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.05006334185600281,
+        0.1528109312057495,
+        0.495850145816803
+      ],
+      "local_signal_background_quantiles": [
+        3.4956612586975098,
+        60.44169998168945,
+        1600.33740234375
+      ]
+    },
+    "mean_comparable": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.5080445408821106,
+        1.0470294952392578,
+        1.9655033349990845
+      ],
+      "local_signal_background_quantiles": [
+        0.8513529896736145,
+        8.072137832641602,
+        59.5744514465332
+      ]
+    },
+    "mean_dominant": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        2.0424447059631348,
+        4.323278903961182,
+        9.96377944946289
+      ],
+      "local_signal_background_quantiles": [
+        0.17375707626342773,
+        1.8471049070358276,
+        18.10192108154297
+      ]
+    },
+    "local_high": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.11633521318435669,
+        1.5299677848815918,
+        17.406391143798828
+      ],
+      "local_signal_background_quantiles": [
+        2.014331817626953,
+        4.593416213989258,
+        9.978776931762695
+      ]
+    },
+    "local_comparable": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.5311699509620667,
+        6.924005031585693,
+        194.3681182861328
+      ],
+      "local_signal_background_quantiles": [
+        0.5013249516487122,
+        1.1415785551071167,
+        1.9927077293395996
+      ]
+    },
+    "local_buried": {
+      "n": 142,
+      "mean_background_signal_quantiles": [
+        3.159637689590454,
+        51.62552070617676,
+        1774.697509765625
+      ],
+      "local_signal_background_quantiles": [
+        0.051614366471767426,
+        0.18630966544151306,
+        0.4796249270439148
+      ]
+    }
+  },
+  "test": {
+    "zero": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_signal_background_quantiles": [
+        -1.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    "mean_weak": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.05010370910167694,
+        0.16589698195457458,
+        0.49817395210266113
+      ],
+      "local_signal_background_quantiles": [
+        2.2638251781463623,
+        51.994991302490234,
+        2004.72216796875
+      ]
+    },
+    "mean_comparable": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.5015400648117065,
+        1.0102951526641846,
+        1.96455717086792
+      ],
+      "local_signal_background_quantiles": [
+        0.6435680389404297,
+        7.925753116607666,
+        98.70974731445312
+      ]
+    },
+    "mean_dominant": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        2.003044843673706,
+        4.4524688720703125,
+        9.959797859191895
+      ],
+      "local_signal_background_quantiles": [
+        0.16231654584407806,
+        1.9414863586425781,
+        17.815074920654297
+      ]
+    },
+    "local_high": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.1407710313796997,
+        1.912015676498413,
+        11.853161811828613
+      ],
+      "local_signal_background_quantiles": [
+        2.0131661891937256,
+        4.606333255767822,
+        9.957280158996582
+      ]
+    },
+    "local_comparable": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.5227535367012024,
+        8.482982635498047,
+        88.37057495117188
+      ],
+      "local_signal_background_quantiles": [
+        0.5013637542724609,
+        0.9562557935714722,
+        1.9267700910568237
+      ]
+    },
+    "local_buried": {
+      "n": 142,
+      "mean_background_signal_quantiles": [
+        2.6565322875976562,
+        45.27588081359863,
+        1372.3822021484375
+      ],
+      "local_signal_background_quantiles": [
+        0.05116193741559982,
+        0.15279638767242432,
+        0.49734383821487427
+      ]
+    }
+  },
+  "ood": {
+    "zero": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "local_signal_background_quantiles": [
+        -1.0,
+        -1.0,
+        -1.0
+      ]
+    },
+    "mean_weak": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.050052300095558167,
+        0.15037097036838531,
+        0.49247437715530396
+      ],
+      "local_signal_background_quantiles": [
+        2.7394068241119385,
+        59.061798095703125,
+        650.5670776367188
+      ]
+    },
+    "mean_comparable": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.5009292364120483,
+        1.0575356483459473,
+        1.9997365474700928
+      ],
+      "local_signal_background_quantiles": [
+        0.6695582866668701,
+        9.35387134552002,
+        125.42507934570312
+      ]
+    },
+    "mean_dominant": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        2.065426826477051,
+        4.6914472579956055,
+        9.844639778137207
+      ],
+      "local_signal_background_quantiles": [
+        0.1594114750623703,
+        1.8834221363067627,
+        24.249908447265625
+      ]
+    },
+    "local_high": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.12073364108800888,
+        1.8360424041748047,
+        28.448516845703125
+      ],
+      "local_signal_background_quantiles": [
+        2.0137650966644287,
+        4.604910850524902,
+        9.921431541442871
+      ]
+    },
+    "local_comparable": {
+      "n": 143,
+      "mean_background_signal_quantiles": [
+        0.8353455066680908,
+        9.602883338928223,
+        86.20494842529297
+      ],
+      "local_signal_background_quantiles": [
+        0.5009605884552002,
+        0.9459423422813416,
+        1.9759190082550049
+      ]
+    },
+    "local_buried": {
+      "n": 142,
+      "mean_background_signal_quantiles": [
+        2.8804194927215576,
+        51.2492618560791,
+        1094.5369873046875
+      ],
+      "local_signal_background_quantiles": [
+        0.05118697136640549,
+        0.14489851146936417,
+        0.4994765520095825
+      ]
+    }
+  }
+}

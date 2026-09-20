@@ -29,3 +29,12 @@ jobs:
           python arpesnn/corpus.py --output arpesnn/dataset/ci --train 10 --validation 10 --test 10 --ood 2 --size 32 --workers 1
           python arpesnn/train_tasks.py --corpus arpesnn/dataset/ci --output arpesnn/models/ci --task denoise --epochs 1 --batch-size 5 --workers 0
           python arpesnn/denoise.py --input outputs/demo/noisy.npy --checkpoint arpesnn/models/ci/denoise/best_model.pt --size 32 --device cpu --output outputs/prediction
+      - name: Background-v2 CPU smoke run
+        env:
+          OMP_NUM_THREADS: '1'
+          OPENBLAS_NUM_THREADS: '1'
+        run: |
+          python arpesnn/background_data.py --output arpesnn/dataset/background-ci --train 14 --validation 7 --test 7 --ood 7 --size 32 --workers 1
+          python arpesnn/audit_background.py arpesnn/dataset/background-ci
+          python arpesnn/train_background.py --corpus arpesnn/dataset/background-ci --output arpesnn/models/background-ci --profile v2 --epochs 1 --batch-size 7 --workers 0 --skip-analysis-stress
+          python arpesnn/apply_background.py --input outputs/demo/noisy.npy --checkpoint arpesnn/models/background-ci/best_model.pt --device cpu --output outputs/background-prediction

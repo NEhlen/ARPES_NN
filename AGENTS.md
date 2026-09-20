@@ -13,13 +13,15 @@
 - `arpesnn/denoise.py`: public inference CLI for nonnegative 2D NumPy arrays and corrected SP2 images.
 - `arpesnn/corpus.py`, `band_models.py`: synthetic configurations, spectral intensities and disk-backed corpus generation.
 - `arpesnn/compact_model.py`, `train_tasks.py`: compact residual U-Net and training; explicitly use `--task denoise` for denoising-only runs.
+- `arpesnn/background_data.py`, `background_model.py`, `train_background.py`, `apply_background.py`, `analyze_background.py`: separate additive-background experiment; see `docs/BACKGROUND.md`. Preserve signed subtraction and the estimated background. Do not claim intrinsic/extrinsic separation or feed signed outputs directly into the denoiser.
 - `arpesnn/sp2.py`: SP2 reader. Raw detector blocks require instrument correction; do not invent energy, Fermi-level or momentum calibration.
 - `arpesnn/benchmark_denoising.py`: validation-tuned Gaussian/Fourier comparison against clean synthetic intensity.
 - `arpesnn/benchmark_overlap.py`, `report_overlap.py`: repeated-noise component-fitting benchmark and reporting.
 - `arpesnn/audit_corpus.py`: generated-data integrity and reproducibility checks.
 - `docs/figures/`, `docs/results/`: curated, publishable figures and compact numeric results; figure provenance belongs in `docs/FIGURES.md`.
 - `tests/`: CPU-compatible regression tests using `unittest`; `.github/workflows/tests.yml` also runs a small training/inference smoke test.
-- `scripts/prepare_release.py`: prepares an inference-weight archive without uploading it.
+- `scripts/prepare_release.py`: prepares task-specific inference-weight archives without uploading them. For v0.2.0, keep denoiser-v1 and background-v2 as separate prerelease assets.
+- Background-v2 uses balanced integrated strength/local contrast and a fixed total count budget. Preserve the v1 profile for comparisons; report failures and retain signed output.
 - `generate_data.py`, `generate_tasks.py`, `nn_pytorch.py` and `apply_model.py` are legacy/pilot workflows. The tracked `arpesnn/dataset/example_dataset/` is a legacy **bare-band** example.
 
 ## Setup and Commands
@@ -78,7 +80,7 @@ uv run python arpesnn/denoise.py --input outputs/demo/noisy.npy \
 - The existing tracked legacy example is an explicit exception. Check `git ls-files` as well as ignore rules before publication; `.gitignore` does not untrack files.
 - Include only deliberately curated figures/results in documentation, with provenance. Do not add raw experimental data or labbook scans by default.
 - The project uses **MIT**; retain `LICENSE` and keep package, documentation and release licensing consistent.
-- Distribute the trained denoiser as a **GitHub Release attachment**, not a Git-tracked checkpoint. Keep the bare-band checkpoint out of the recommended release.
+- Distribute trained denoiser and optional background weights as separate **GitHub Release attachments**, not a Git-tracked checkpoint. Keep the bare-band checkpoint out of the recommended release.
 - Release bundles contain inference weights, portable metadata, model card, MIT license and SHA-256 checksums; exclude optimizer state, corpora and machine-specific/private metadata.
 - Preparing an archive does not publish it. Commit/push/tag/release actions should follow the user's requested scope. Do not change repository visibility implicitly.
 - Add a pretrained download link only after the actual release asset is available and verified. Do not assume a tag, release or URL exists. See `docs/PUBLISHING.md`.

@@ -49,7 +49,7 @@ def causal_self_energy(energy, p):
     return result - at_zero.real
 
 
-def _simulate_once(seed, family, size=256):
+def _simulate_once(seed, family, size=256, include_background=True):
     rng = np.random.default_rng(seed)
     p = sample_parameters(rng, family)
     span = float(np.exp(rng.uniform(np.log(0.3), np.log(3.0))))
@@ -123,6 +123,8 @@ def _simulate_once(seed, family, size=256):
     clean = intrinsic * occupation * envelope
     # Background slope is along energy, not momentum.
     background = float(rng.uniform(0, 0.12))
+    if not include_background:
+        background = 0.0
     clean += (
         background
         * clean.mean()
@@ -199,13 +201,15 @@ def _simulate_once(seed, family, size=256):
     )
 
 
-def simulate(seed, family, size=256):
+def simulate(seed, family, size=256, include_background=True):
     if size < 16 or size % 4 or family not in FAMILIES or seed < 0:
         raise ValueError("Invalid simulation shape, family or seed")
     # Exclude effectively empty cuts / isolated subpixel slivers. Do not clip
     # intensities: resample the configuration instead, retaining its RNG seed.
     for attempt in range(64):
-        result = _simulate_once(seed + attempt * 2**32, family, size)
+        result = _simulate_once(
+            seed + attempt * 2**32, family, size, include_background=include_background
+        )
         images, grids, sigma, bands, meta = result
         energy = grids[0]
         visible = np.any(

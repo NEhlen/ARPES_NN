@@ -1,0 +1,394 @@
+{
+  "single": {
+    "zero": {
+      "raw": {
+        "center_mae_meV": 0.0997207283097106,
+        "width_mae_meV": 0.28049230933899333,
+        "area_relative_mae": 0.003711018818218823,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 0.0997207283097106,
+        "width_mae_meV": 0.28049230933899333,
+        "area_relative_mae": 0.003711018818218823,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 2.594226977005861,
+        "width_mae_meV": 12.518069307377543,
+        "area_relative_mae": 0.42753654761281595,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 0.09833816846199588,
+        "width_mae_meV": 0.2713561780339177,
+        "area_relative_mae": 0.004074141940647989,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 0.10609046743420374,
+        "width_mae_meV": 0.2796525854057151,
+        "area_relative_mae": 0.004942494113457509,
+        "fit_success": 1.0
+      }
+    },
+    "local_comparable": {
+      "raw": {
+        "center_mae_meV": 192.1969725990662,
+        "width_mae_meV": 136.01274213960747,
+        "area_relative_mae": 6.912431533137946,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 0.6380470802388687,
+        "width_mae_meV": 1.9769152130073058,
+        "area_relative_mae": 0.03021481357363687,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 6.513982666694571,
+        "width_mae_meV": 26.450415943677495,
+        "area_relative_mae": 0.6961104838136242,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 1.6884952214165148,
+        "width_mae_meV": 3.132664337738731,
+        "area_relative_mae": 0.07024874880921324,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 2.6300733941347003,
+        "width_mae_meV": 5.233344669381787,
+        "area_relative_mae": 0.15874337226488172,
+        "fit_success": 1.0
+      }
+    },
+    "local_buried": {
+      "raw": {
+        "center_mae_meV": 111.756867967464,
+        "width_mae_meV": 36.651998588615726,
+        "area_relative_mae": 6.9124315331379576,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 3.4877129620167433,
+        "width_mae_meV": 10.722432193931338,
+        "area_relative_mae": 0.14627231450458342,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 67.9826099191704,
+        "width_mae_meV": 49.23396127761742,
+        "area_relative_mae": 0.6042212924519591,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 109.69606891874382,
+        "width_mae_meV": 95.84627281277645,
+        "area_relative_mae": 6.9124315331379576,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 68.70538317271283,
+        "width_mae_meV": 26.633627228234513,
+        "area_relative_mae": 0.4266224622399045,
+        "fit_success": 1.0
+      }
+    }
+  },
+  "double_0.7": {
+    "zero": {
+      "raw": {
+        "center_mae_meV": 0.5794027702692578,
+        "width_mae_meV": 1.052508164045648,
+        "area_relative_mae": 0.04869063939618077,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 0.5794027702692578,
+        "width_mae_meV": 1.052508164045648,
+        "area_relative_mae": 0.04869063939618077,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 2.178572796113,
+        "width_mae_meV": 16.172329548583587,
+        "area_relative_mae": 0.5185100204093193,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 0.5640911768562835,
+        "width_mae_meV": 1.047465206198275,
+        "area_relative_mae": 0.047304983882975396,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 0.5684325099074943,
+        "width_mae_meV": 1.0494845754383673,
+        "area_relative_mae": 0.047281352838208106,
+        "fit_success": 1.0
+      }
+    },
+    "local_comparable": {
+      "raw": {
+        "center_mae_meV": 113.30303002959471,
+        "width_mae_meV": 184.82744323410367,
+        "area_relative_mae": 8.253829282744013,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 3.5506134992096077,
+        "width_mae_meV": 6.643087409716608,
+        "area_relative_mae": 0.2860312703342055,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 67.01248301446563,
+        "width_mae_meV": 55.26790151015676,
+        "area_relative_mae": 0.6580735348719584,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 59.578440029989174,
+        "width_mae_meV": 27.298978887843393,
+        "area_relative_mae": 1.3059142793378307,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 3.622833095505301,
+        "width_mae_meV": 7.715697053035572,
+        "area_relative_mae": 0.2989864785851438,
+        "fit_success": 1.0
+      }
+    },
+    "local_buried": {
+      "raw": {
+        "center_mae_meV": 70.85295707816046,
+        "width_mae_meV": 65.7914658593971,
+        "area_relative_mae": 15.020812094211577,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 16.47300003632363,
+        "width_mae_meV": 18.912094215839144,
+        "area_relative_mae": 0.5911234847845557,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 44.13155717628616,
+        "width_mae_meV": 32.82128643960355,
+        "area_relative_mae": 0.5659947032427863,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 103.90249986123992,
+        "width_mae_meV": 137.62729130840037,
+        "area_relative_mae": 10.334518035090278,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 99.99442101799148,
+        "width_mae_meV": 142.83994089651682,
+        "area_relative_mae": 7.915325023913939,
+        "fit_success": 1.0
+      }
+    }
+  },
+  "weak_double": {
+    "zero": {
+      "raw": {
+        "center_mae_meV": 1.2565887938685478,
+        "width_mae_meV": 1.8668668771150054,
+        "area_relative_mae": 0.09553631123835103,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 1.2565887938685478,
+        "width_mae_meV": 1.8668668771150054,
+        "area_relative_mae": 0.09553631123835103,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 15.045504409336388,
+        "width_mae_meV": 14.807115277025922,
+        "area_relative_mae": 0.8106175595817948,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 1.2055545099078027,
+        "width_mae_meV": 1.790369463379125,
+        "area_relative_mae": 0.08954513234179923,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 1.2279551876578148,
+        "width_mae_meV": 1.8110408578910322,
+        "area_relative_mae": 0.09374483773863357,
+        "fit_success": 1.0
+      }
+    },
+    "local_comparable": {
+      "raw": {
+        "center_mae_meV": 120.77402529328546,
+        "width_mae_meV": 145.40487246197964,
+        "area_relative_mae": 11.103076833295956,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 6.307272572093656,
+        "width_mae_meV": 9.659467922647766,
+        "area_relative_mae": 0.8692609828913488,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 50.80058766059012,
+        "width_mae_meV": 35.27498144635742,
+        "area_relative_mae": 1.0953331856231188,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 29.030763823473972,
+        "width_mae_meV": 28.20591660169126,
+        "area_relative_mae": 1.9639186057865314,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 4.913792741407815,
+        "width_mae_meV": 14.566773211832869,
+        "area_relative_mae": 0.6404092465398292,
+        "fit_success": 1.0
+      }
+    },
+    "local_buried": {
+      "raw": {
+        "center_mae_meV": 136.4409114574923,
+        "width_mae_meV": 184.72970113558355,
+        "area_relative_mae": 32.68493162977581,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 10.938853664528331,
+        "width_mae_meV": 14.153504856497655,
+        "area_relative_mae": 0.9161419840989568,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 116.64804472936294,
+        "width_mae_meV": 112.26454501120205,
+        "area_relative_mae": 2.1543503069504633,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 151.23834337042427,
+        "width_mae_meV": 117.13685214080638,
+        "area_relative_mae": 8.897823427564223,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 48.06255877083436,
+        "width_mae_meV": 21.639281278012213,
+        "area_relative_mae": 0.9978895422639112,
+        "fit_success": 1.0
+      }
+    }
+  },
+  "broad_incoherent": {
+    "zero": {
+      "raw": {
+        "center_mae_meV": 1.317866984424992,
+        "width_mae_meV": 5.828249335650601,
+        "area_relative_mae": 0.1289971636045064,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 1.317866984424992,
+        "width_mae_meV": 5.828249335650601,
+        "area_relative_mae": 0.1289971636045064,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 20.65242348605959,
+        "width_mae_meV": 56.34651908313579,
+        "area_relative_mae": 0.6244768017576067,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 1.2494478468472912,
+        "width_mae_meV": 6.129521462316051,
+        "area_relative_mae": 0.13410027977598263,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 1.2169140870363402,
+        "width_mae_meV": 7.110679477133144,
+        "area_relative_mae": 0.1449950438617259,
+        "fit_success": 1.0
+      }
+    },
+    "local_comparable": {
+      "raw": {
+        "center_mae_meV": 242.89130354602534,
+        "width_mae_meV": 42.60995207011085,
+        "area_relative_mae": 15.26895864802995,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 21.630125518866613,
+        "width_mae_meV": 33.473292484843704,
+        "area_relative_mae": 0.5251757565354404,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 152.06884858959882,
+        "width_mae_meV": 144.94009058824957,
+        "area_relative_mae": 1.3159604829321188,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 165.04157146117535,
+        "width_mae_meV": 108.23077449259559,
+        "area_relative_mae": 3.2086796078429995,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 37.45767708593577,
+        "width_mae_meV": 60.6075325182861,
+        "area_relative_mae": 0.5205681826304286,
+        "fit_success": 1.0
+      }
+    },
+    "local_buried": {
+      "raw": {
+        "center_mae_meV": 94.61141588700751,
+        "width_mae_meV": 59.75040386836121,
+        "area_relative_mae": 15.268958648045858,
+        "fit_success": 1.0
+      },
+      "oracle_subtraction": {
+        "center_mae_meV": 24.409423634374733,
+        "width_mae_meV": 45.67124940425923,
+        "area_relative_mae": 0.5682777348993315,
+        "fit_success": 1.0
+      },
+      "lower_envelope": {
+        "center_mae_meV": 92.99252012829417,
+        "width_mae_meV": 66.74189805346501,
+        "area_relative_mae": 1.2775623346107914,
+        "fit_success": 1.0
+      },
+      "v1": {
+        "center_mae_meV": 126.06016297450506,
+        "width_mae_meV": 110.01626272781533,
+        "area_relative_mae": 10.97568637845442,
+        "fit_success": 1.0
+      },
+      "v2": {
+        "center_mae_meV": 59.80345214778686,
+        "width_mae_meV": 58.295018050383504,
+        "area_relative_mae": 0.7009198100575357,
+        "fit_success": 1.0
+      }
+    }
+  }
+}

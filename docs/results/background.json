@@ -1,0 +1,231 @@
+{
+  "seed": 42,
+  "baseline_quantile": 0.05,
+  "validation_baseline_scores": {
+    "0.02": 0.06652324101794332,
+    "0.05": 0.06124860543020532,
+    "0.1": 0.06555259137651276,
+    "0.2": 0.09105993445658318
+  },
+  "checkpoint_sha256": "86de939a17cb87149dd8817e7fe45195227d656b2d86822d83a4498672c2f6d8",
+  "splits": {
+    "test": {
+      "all": {
+        "none": {
+          "n": 1000,
+          "background_mse": 0.12233716471475782,
+          "corrected_mse": 0.16061872007732744,
+          "signal_area_removed_fraction": -0.48454690710641446,
+          "absolute_area_error_fraction": 0.48454690710641446,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 1000,
+          "background_mse": 0.005811462249097531,
+          "corrected_mse": 0.04405086501076585,
+          "signal_area_removed_fraction": 0.00027416507032103257,
+          "absolute_area_error_fraction": 0.04573950145454364,
+          "negative_corrected_fraction": 0.16416975402832032
+        },
+        "lower_envelope": {
+          "n": 1000,
+          "background_mse": 0.0531259731197988,
+          "corrected_mse": 0.09140732839197153,
+          "signal_area_removed_fraction": -0.04088304337045656,
+          "absolute_area_error_fraction": 0.18728213480506065,
+          "negative_corrected_fraction": 0.051664871215820314
+        }
+      },
+      "zero": {
+        "none": {
+          "n": 194,
+          "background_mse": 0.0,
+          "corrected_mse": 0.05140437332483623,
+          "signal_area_removed_fraction": 0.0,
+          "absolute_area_error_fraction": 0.0,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 194,
+          "background_mse": 0.0008960914075060762,
+          "corrected_mse": 0.05229909591029936,
+          "signal_area_removed_fraction": 0.01124267849936774,
+          "absolute_area_error_fraction": 0.01124267849936774,
+          "negative_corrected_fraction": 0.17149651910840852
+        },
+        "lower_envelope": {
+          "n": 194,
+          "background_mse": 0.05228364042157351,
+          "corrected_mse": 0.10366415703511969,
+          "signal_area_removed_fraction": 0.09177835350574336,
+          "absolute_area_error_fraction": 0.09177835350574336,
+          "negative_corrected_fraction": 0.05481366029719716
+        }
+      },
+      "broad_flat": {
+        "none": {
+          "n": 257,
+          "background_mse": 0.12373622558960702,
+          "corrected_mse": 0.16548377422707386,
+          "signal_area_removed_fraction": -0.48406600352043305,
+          "absolute_area_error_fraction": 0.48406600352043305,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 257,
+          "background_mse": 0.006885759511487246,
+          "corrected_mse": 0.048598282609238194,
+          "signal_area_removed_fraction": 0.007942595150854425,
+          "absolute_area_error_fraction": 0.05672729880130462,
+          "negative_corrected_fraction": 0.09922986457320039
+        },
+        "lower_envelope": {
+          "n": 257,
+          "background_mse": 0.08125245036350759,
+          "corrected_mse": 0.12298619299664992,
+          "signal_area_removed_fraction": 0.08430769036755922,
+          "absolute_area_error_fraction": 0.2222111161629731,
+          "negative_corrected_fraction": 0.05452363129255836
+        }
+      },
+      "weak_band": {
+        "none": {
+          "n": 255,
+          "background_mse": 0.11996879181276787,
+          "corrected_mse": 0.15362332336234805,
+          "signal_area_removed_fraction": -0.48135521647830803,
+          "absolute_area_error_fraction": 0.48135521647830803,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 255,
+          "background_mse": 0.006072859964821392,
+          "corrected_mse": 0.03967978912816547,
+          "signal_area_removed_fraction": -0.0076796118549514085,
+          "absolute_area_error_fraction": 0.044031926298881516,
+          "negative_corrected_fraction": 0.15511253207337622
+        },
+        "lower_envelope": {
+          "n": 255,
+          "background_mse": 0.04776120327228187,
+          "corrected_mse": 0.08140825820223921,
+          "signal_area_removed_fraction": -0.07404863135341336,
+          "absolute_area_error_fraction": 0.1861656720914385,
+          "negative_corrected_fraction": 0.05774500229779412
+        }
+      }
+    },
+    "ood": {
+      "all": {
+        "none": {
+          "n": 1000,
+          "background_mse": 0.12374246256949846,
+          "corrected_mse": 0.1632599794336129,
+          "signal_area_removed_fraction": -0.4911955015268177,
+          "absolute_area_error_fraction": 0.4911955015268177,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 1000,
+          "background_mse": 0.006279265538767504,
+          "corrected_mse": 0.04574678591411794,
+          "signal_area_removed_fraction": -0.0014296462477650493,
+          "absolute_area_error_fraction": 0.052344815140037096,
+          "negative_corrected_fraction": 0.18779988098144532
+        },
+        "lower_envelope": {
+          "n": 1000,
+          "background_mse": 0.08095795130400345,
+          "corrected_mse": 0.12041088287046296,
+          "signal_area_removed_fraction": -0.023147762752066682,
+          "absolute_area_error_fraction": 0.19737671835774245,
+          "negative_corrected_fraction": 0.05294235229492188
+        }
+      },
+      "zero": {
+        "none": {
+          "n": 208,
+          "background_mse": 0.0,
+          "corrected_mse": 0.05199738877294854,
+          "signal_area_removed_fraction": 0.0,
+          "absolute_area_error_fraction": 0.0,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 208,
+          "background_mse": 0.0009905402958408488,
+          "corrected_mse": 0.05299950636617723,
+          "signal_area_removed_fraction": 0.011934284105126817,
+          "absolute_area_error_fraction": 0.011934284105126817,
+          "negative_corrected_fraction": 0.2276461674616887
+        },
+        "lower_envelope": {
+          "n": 208,
+          "background_mse": 0.10572993592383817,
+          "corrected_mse": 0.1576355977122148,
+          "signal_area_removed_fraction": 0.10549163058028145,
+          "absolute_area_error_fraction": 0.10549163058028145,
+          "negative_corrected_fraction": 0.05187907585730919
+        }
+      },
+      "broad_flat": {
+        "none": {
+          "n": 241,
+          "background_mse": 0.137556723479367,
+          "corrected_mse": 0.17403715640268794,
+          "signal_area_removed_fraction": -0.5381333220255449,
+          "absolute_area_error_fraction": 0.5381333220255449,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 241,
+          "background_mse": 0.007107237170240745,
+          "corrected_mse": 0.04351368047566544,
+          "signal_area_removed_fraction": 0.013554082061461158,
+          "absolute_area_error_fraction": 0.0665312354766046,
+          "negative_corrected_fraction": 0.10059923354026193
+        },
+        "lower_envelope": {
+          "n": 241,
+          "background_mse": 0.09448701839933184,
+          "corrected_mse": 0.1309347651822539,
+          "signal_area_removed_fraction": 0.09250482356299441,
+          "absolute_area_error_fraction": 0.23834557994945108,
+          "negative_corrected_fraction": 0.05654983203935425
+        }
+      },
+      "weak_band": {
+        "none": {
+          "n": 258,
+          "background_mse": 0.11659096317018776,
+          "corrected_mse": 0.15957419704934656,
+          "signal_area_removed_fraction": -0.46188836448010084,
+          "absolute_area_error_fraction": 0.46188836448010084,
+          "negative_corrected_fraction": 0.0
+        },
+        "network": {
+          "n": 258,
+          "background_mse": 0.008028667183764831,
+          "corrected_mse": 0.0509506045906559,
+          "signal_area_removed_fraction": -0.012414943780041618,
+          "absolute_area_error_fraction": 0.05322610406787586,
+          "negative_corrected_fraction": 0.16897494293922602
+        },
+        "lower_envelope": {
+          "n": 258,
+          "background_mse": 0.09813947094671288,
+          "corrected_mse": 0.14093828402990258,
+          "signal_area_removed_fraction": -0.018936706769827016,
+          "absolute_area_error_fraction": 0.16936110710393992,
+          "negative_corrected_fraction": 0.06605831412381905
+        }
+      }
+    }
+  },
+  "experimental": {
+    "mean_background_fraction": 0.14867891371250153,
+    "negative_corrected_fraction": 0.0018768310546875,
+    "note": "Signed subtraction only. Background shot noise remains; no denoising or bare-band recovery. Experimental decomposition has no ground truth.",
+    "source": "Private corrected SP2 acquisition mos2_2_074.sp2; raw data not distributed"
+  }
+}

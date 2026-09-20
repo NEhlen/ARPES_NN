@@ -1,0 +1,31 @@
+{
+  "selection": "Five evenly spaced acquisitions in sorted filename order (061,065,069,073,077); no selection by prediction quality. Same local session; not five materials.",
+  "checkpoint_sha256": "aa237190c1771acff65bdf7b8af4e6fa3bffaac8a84b495a1e3884165a01c257",
+  "examples": [
+    {
+      "acquisition": "mos2_2_061.sp2",
+      "mean_background_fraction": 0.42552450299263,
+      "negative_corrected_fraction": 0.0018157958984375
+    },
+    {
+      "acquisition": "mos2_2_065.sp2",
+      "mean_background_fraction": 0.1455470621585846,
+      "negative_corrected_fraction": 0.014923095703125
+    },
+    {
+      "acquisition": "mos2_2_069.sp2",
+      "mean_background_fraction": 0.22689147293567657,
+      "negative_corrected_fraction": 0.0022125244140625
+    },
+    {
+      "acquisition": "mos2_2_073.sp2",
+      "mean_background_fraction": 0.2745745778083801,
+      "negative_corrected_fraction": 0.001678466796875
+    },
+    {
+      "acquisition": "mos2_2_077.sp2",
+      "mean_background_fraction": 0.12804405391216278,
+      "negative_corrected_fraction": 0.0022430419921875
+    }
+  ]
+}

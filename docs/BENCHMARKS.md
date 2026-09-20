@@ -1,5 +1,7 @@
 # Denoising benchmarks
 
+The separate [background-estimation benchmark](BACKGROUND.md#reference-run-and-results) evaluates background error, false signal removal and component fits; its metrics are not interchangeable with denoising MSE.
+
 Two questions are evaluated separately: reconstructing clean synthetic intensity and recovering parameters from overlapping spectra. Neither is an experimental validation.
 
 ## Clean-intensity reconstruction
